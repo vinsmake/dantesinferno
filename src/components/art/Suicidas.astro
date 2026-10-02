@@ -1,0 +1,66 @@
+---
+import { rng, branchTree, range, r1 } from '../../lib/rng';
+const r = rng(88);
+const trees = range(9).map((i) => {
+  const x = (i + 0.5) * (1200 / 9) + (r() - 0.5) * 50;
+  const far = i % 2 === 0;
+  return {
+    far,
+    t: branchTree(r, x, far ? 470 : 540, far ? 120 + r() * 40 : 160 + r() * 50, 6, { spread: 0.75, twist: 1.1, thorns: true, shrink: 0.7 }),
+  };
+});
+const harpy = 'M40 20C30 10 15 2 0 6 10 10 18 16 24 24 18 22 10 24 4 30 16 28 28 30 34 34L38 46H42L46 34C52 30 64 28 76 30 70 24 62 22 56 24 62 16 70 10 80 6 65 2 50 10 40 20Z';
+const perched = [
+  { x: 240, y: 300 },
+  { x: 700, y: 270 },
+  { x: 1010, y: 330 },
+];
+const dog = 'M0 14C6 8 14 8 20 10H46C52 6 58 4 62 6L70 10 66 14H60L56 18 60 28H56L50 18H30L22 28H18L20 18C12 18 6 20 0 14Z';
+---
+<svg viewBox="0 0 1200 600" aria-hidden="true">
+  <rect x="0" y="460" width="1200" height="140" fill="#0c0908" />
+  {trees.map(({ far, t }) => (
+    <g fill="none" stroke={far ? '#2a221d' : '#3a2c24'} stroke-linecap="round" opacity={far ? 0.8 : 1}>
+      {t.levels.map((d, k) => <path d={d} stroke-width={Math.max(1, (far ? 14 : 22) * Math.pow(0.62, k))} />)}
+      <path d={t.thorns} stroke-width="1.5" />
+    </g>
+  ))}
+  <!-- Pier delle Vigne: a branch that bleeds -->
+  <g transform="translate(470 250)">
+    <circle r="40" fill="url(#g-hot)" opacity="0.4" class="pulse" />
+    {range(3).map((i) => <circle r="3.5" fill="#b3110a" class="sui-drop" style={`animation-delay:${i * 0.8}s`} />)}
+    <text y="-48" text-anchor="middle" font-family="IM Fell English" font-style="italic" font-size="22" fill="#ffcfb0" class="pulse">«Perché mi schiante?»</text>
+  </g>
+  {perched.map((p, i) => (
+    <g transform={`translate(${p.x} ${p.y}) scale(0.9)`}>
+      <g class="sui-flap" style={`animation-delay:${i * 0.3}s`}><path d={harpy} fill="#1a1210" stroke="#c98a5a" stroke-opacity="0.6" /></g>
+      <circle cx="40" cy="14" r="6" fill="#2a1d18" />
+      <circle cx="38" cy="13" r="1.2" fill="#ff7a1a" />
+    </g>
+  ))}
+  <g>
+    <animateMotion dur="14s" repeatCount="indefinite" path="M-100 150 C200 60 500 220 800 120 S1150 80 1300 160" />
+    <g class="sui-flap fast"><path d={harpy} fill="#120c0a" stroke="#c98a5a" stroke-opacity="0.6" /></g>
+  </g>
+  <!-- spendthrifts chased by black hounds -->
+  <g class="sui-chase">
+    <g transform="translate(0 520)">
+      <use href="#soul-run" x="80" y="-56" width="34" height="56" fill="#6e6258" />
+      <use href="#soul-run" x="130" y="-54" width="32" height="54" fill="#6e6258" />
+      {[0, 60, 110].map((x, i) => (
+        <g transform={`translate(${-60 - x} -24) scale(1.2)`}><g class="sui-dog" style={`animation-delay:${i * 0.1}s`}><path d={dog} fill="#050303" /><circle cx="60" cy="9" r="1.5" fill="#ff3a10" /></g></g>
+      ))}
+    </g>
+  </g>
+</svg>
+<style>
+  .sui-flap { transform-box: fill-box; transform-origin: 50% 60%; animation: sui-flap 1.2s ease-in-out infinite; }
+  .sui-flap.fast { animation-duration: 0.4s; }
+  @keyframes sui-flap { 50% { transform: scaleY(0.45); } }
+  .sui-drop { animation: sui-drip 2.4s ease-in infinite; opacity: 0; }
+  @keyframes sui-drip { 0% { transform: translateY(0); opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(260px); opacity: 0; } }
+  .sui-chase { animation: sui-run 7s linear infinite; }
+  @keyframes sui-run { from { transform: translateX(-200px); } to { transform: translateX(1400px); } }
+  .sui-dog { transform-box: fill-box; animation: sui-bound 0.3s ease-in-out infinite alternate; }
+  @keyframes sui-bound { to { transform: translateY(-6px) rotate(-6deg); } }
+</style>

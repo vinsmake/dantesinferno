@@ -1,0 +1,81 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(66);
+const rows = [
+  { y: 360, s: 0.42, n: 9 },
+  { y: 420, s: 0.58, n: 7 },
+  { y: 500, s: 0.78, n: 6 },
+  { y: 610, s: 1.05, n: 4 },
+];
+const tombs = rows.flatMap((row, ri) =>
+  range(row.n).map((i) => ({
+    x: r1((i + 0.5) * (1200 / row.n) + (r() - 0.5) * 40),
+    y: row.y,
+    s: row.s,
+    lid: r1(-12 - r() * 25),
+    d: r1(r() * -1),
+    farinata: ri === 3 && i === 1,
+  })),
+);
+const towers = [90, 330, 600, 870, 1110];
+---
+<svg viewBox="0 0 1200 700" aria-hidden="true">
+  <defs>
+    <linearGradient id="dis-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a1206" />
+      <stop offset="1" stop-color="#1a0402" />
+    </linearGradient>
+    <radialGradient id="dis-dome" cx="0.5" cy="0.8" r="0.8">
+      <stop offset="0" stop-color="#ffcf6a" />
+      <stop offset="0.5" stop-color="#ff4a10" />
+      <stop offset="1" stop-color="#5a0a02" />
+    </radialGradient>
+    <linearGradient id="dis-stone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3a33" />
+      <stop offset="1" stop-color="#15100d" />
+    </linearGradient>
+  </defs>
+  <!-- the red-hot city -->
+  <ellipse cx="600" cy="230" rx="700" ry="120" fill="url(#g-hot)" opacity="0.35" class="pulse" />
+  <g>
+    {towers.map((x) => (
+      <g>
+        <path d={`M${x - 34} 260V130A34 34 0 0 1 ${x + 34} 130V260Z`} fill="url(#dis-wall)" />
+        <path d={`M${x - 26} 112A26 30 0 0 1 ${x + 26} 112Z`} fill="url(#dis-dome)" class="pulse" />
+        <rect x={x - 4} y="150" width="8" height="18" fill="#ffb347" opacity="0.8" />
+      </g>
+    ))}
+    <rect x="0" y="180" width="1200" height="80" fill="url(#dis-wall)" />
+    <line x1="0" y1="176" x2="1200" y2="176" stroke="#5a1206" stroke-width="12" stroke-dasharray="16 10" />
+    <rect x="0" y="252" width="1200" height="4" fill="#ff6a1a" opacity="0.6" />
+    <path d="M565 260V215A35 35 0 0 1 635 215V260Z" fill="#0d0302" />
+  </g>
+  <!-- the three Furies on the tower -->
+  {[-22, 0, 22].map((dx, i) => (
+    <g transform={`translate(${600 + dx} 80)`} class="bob" style={`animation-delay:${i * 0.4}s`}>
+      <use href="#soul-arms" x="-9" y="-30" width="18" height="30" fill="#3a0d0a" />
+      <path d="M-6 -27q-4 -6 0 -10M0 -29q2 -8 -2 -12M6 -27q5 -5 1 -10" stroke="#5a9a4a" stroke-width="1.5" fill="none" />
+    </g>
+  ))}
+  <!-- field of burning tombs -->
+  <rect x="0" y="300" width="1200" height="400" fill="#0c0504" opacity="0.6" />
+  {tombs.map((t) => (
+    <g transform={`translate(${t.x} ${t.y}) scale(${t.s})`}>
+      <ellipse cx="0" cy="0" rx="120" ry="40" fill="url(#g-hot)" opacity="0.5" />
+      <use href="#flame" x="-48" y="-150" width="40" height="110" class="flick" style={`animation-delay:${t.d}s`} />
+      <use href="#flame" x="-10" y="-175" width="48" height="130" class="flick" style={`animation-delay:${t.d - 0.3}s`} />
+      <use href="#flame" x="26" y="-140" width="36" height="100" class="flick" style={`animation-delay:${t.d - 0.6}s`} />
+      {t.farinata && (
+        <g transform="translate(-4 -40)">
+          <use href="#soul-arms" x="-18" y="-60" width="36" height="60" fill="#120806" />
+          <text x="0" y="-80" text-anchor="middle" font-family="Cinzel" font-size="16" fill="#ffcf7a">Farinata</text>
+        </g>
+      )}
+      <path d="M-70 -40H70L80 -30V10H-80V-30Z" fill="url(#dis-stone)" stroke="#000" stroke-width="2" />
+      <path d="M-70 -40H70L80 -30H-80Z" fill="#ff7a2a" opacity="0.7" />
+      <g transform={`translate(70 -40) rotate(${t.lid})`}>
+        <rect x="0" y="-8" width="150" height="14" fill="#2c221d" stroke="#000" />
+      </g>
+    </g>
+  ))}
+</svg>

@@ -1,0 +1,214 @@
+---
+import { rng, branchTree, range } from '../../lib/rng';
+
+const W = 1600;
+const H = 900;
+const layer = (seed: number, count: number, minLen: number, maxLen: number, baseY: number, depth: number) => {
+  const r = rng(seed);
+  return range(count).map((i) => {
+    const x = (i + 0.2 + r() * 0.6) * (W / count);
+    return branchTree(r, x, baseY, minLen + r() * (maxLen - minLen), depth, { spread: 0.5, twist: 0.45, shrink: 0.74 });
+  });
+};
+const layers = [
+  { trees: layer(11, 14, 130, 190, 780, 6), color: '#0f1a16', base: 12, speed: 0.1 },
+  { trees: layer(23, 10, 190, 260, 860, 7), color: '#08100d', base: 18, speed: 0.25 },
+  { trees: layer(37, 7, 260, 340, 940, 7), color: '#020403', base: 30, speed: 0.45 },
+];
+const eyes = [
+  { x: 360, y: 690, c: '#c8ff6a', n: 'lonza', d: 0 },
+  { x: 820, y: 730, c: '#ffae2e', n: 'leone', d: 1.7 },
+  { x: 1240, y: 705, c: '#d9ecff', n: 'lupa', d: 3.1 },
+];
+---
+<section class="selva" id="selva" data-scene data-mode="motes" data-bg="#060a08" data-glow="#0f1d14" data-level="-1" data-label="La selva oscura">
+  <svg class="selva-svg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#020403" />
+        <stop offset="0.55" stop-color="#0d1a17" />
+        <stop offset="1" stop-color="#1b2a20" />
+      </linearGradient>
+      <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#fff2c4" />
+        <stop offset="0.25" stop-color="#ffcf7a" stop-opacity="0.8" />
+        <stop offset="1" stop-color="#ff9a3c" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4b3a22" />
+        <stop offset="0.15" stop-color="#1e2117" />
+        <stop offset="1" stop-color="#0a0f0c" />
+      </linearGradient>
+    </defs>
+    <rect width={W} height={H} fill="url(#sky)" />
+    <g data-speed="0.05">
+      <circle cx="1060" cy="470" r="260" fill="url(#sun)" class="pulse" />
+      <circle cx="1060" cy="470" r="46" fill="#fff1cc" opacity="0.9" />
+      <path d="M560 900 C780 640 900 480 1060 470 C1220 480 1360 640 1600 820 L1600 900Z" fill="url(#hill)" />
+    </g>
+    {
+      layers.map((L, li) => (
+        <g data-speed={L.speed} fill="none" stroke={L.color} stroke-linecap="round">
+          {li === 1 && (
+            <g class="fog">
+              <ellipse cx="400" cy="760" rx="700" ry="60" fill="#9fb3a6" opacity="0.07" filter="url(#f-blur)" stroke="none" />
+              <ellipse cx="1300" cy="800" rx="600" ry="50" fill="#9fb3a6" opacity="0.06" filter="url(#f-blur)" stroke="none" />
+            </g>
+          )}
+          {L.trees.map((t) =>
+            t.levels.map((d, k) => <path d={d} stroke-width={Math.max(0.8, L.base * Math.pow(0.6, k))} />),
+          )}
+          {li === 1 &&
+            eyes.map((e) => (
+              <g class="beast" style={`animation-delay:${e.d}s`}>
+                <g class="blink" style={`animation-delay:${e.d}s`}>
+                  <ellipse cx={e.x} cy={e.y} rx="7" ry="4" fill={e.c} filter="url(#f-glow)" stroke="none" />
+                  <ellipse cx={e.x + 30} cy={e.y} rx="7" ry="4" fill={e.c} filter="url(#f-glow)" stroke="none" />
+                </g>
+              </g>
+            ))}
+          {li === 2 && <rect x="0" y="860" width={W} height="60" fill="#020403" stroke="none" />}
+        </g>
+      ))
+    }
+  </svg>
+
+  <div class="selva-copy">
+    <p class="selva-pre reveal-now">Dante Alighieri · 1308–1321</p>
+    <h1 class="selva-title" aria-label="Inferno">
+      {'INFERNO'.split('').map((c, i) => <span style={`--i:${i}`}>{c}</span>)}
+    </h1>
+    <p class="selva-verse reveal-now">
+      Nel mezzo del cammin di nostra vita<br />
+      mi ritrovai per una selva oscura,<br />
+      ché la diritta via era smarrita.
+    </p>
+    <p class="selva-tr reveal-now">A mitad del camino de nuestra vida me encontré en una selva oscura, pues la recta vía había perdido.</p>
+  </div>
+  <div class="scroll-cue">
+    <span>Desciende</span>
+    <i></i>
+  </div>
+</section>
+
+<style>
+  .selva {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+  }
+  .selva-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .fog {
+    animation: fog 18s ease-in-out infinite alternate;
+  }
+  @keyframes fog {
+    to { transform: translateX(-120px); }
+  }
+  .beast {
+    animation: lurk 9s ease-in-out infinite;
+  }
+  @keyframes lurk {
+    0%, 100% { opacity: 0; }
+    20%, 70% { opacity: 1; }
+  }
+  .selva-copy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 16px 10vh;
+  }
+  .selva-pre {
+    font-family: var(--caps);
+    letter-spacing: 0.5em;
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin: 0 0 10px;
+  }
+  .selva-title {
+    font-size: clamp(64px, 15vw, 240px);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 0.9;
+    color: #f7e2bd;
+    text-shadow: 0 0 30px rgba(255, 110, 30, 0.55), 0 0 90px rgba(255, 60, 0, 0.35);
+    margin: 0;
+  }
+  .selva-title span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) scale(1.2);
+    filter: blur(12px);
+    animation:
+      rise 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards,
+      burn 3.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.12s + 0.2s), calc(var(--i) * 0.3s + 1.8s);
+  }
+  @keyframes rise {
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes burn {
+    0%, 100% { text-shadow: 0 0 30px rgba(255, 110, 30, 0.55), 0 0 90px rgba(255, 60, 0, 0.35); }
+    50% { text-shadow: 0 0 18px rgba(255, 170, 60, 0.9), 0 0 140px rgba(255, 60, 0, 0.6); }
+  }
+  .selva-verse {
+    font-family: var(--fell);
+    font-style: italic;
+    font-size: clamp(20px, 2.2vw, 32px);
+    line-height: 1.35;
+    margin: 24px 0 0;
+  }
+  .selva-tr {
+    max-width: 560px;
+    color: var(--ink-dim);
+    font-size: 0.9em;
+    font-style: italic;
+  }
+  .reveal-now {
+    opacity: 0;
+    animation: fadein 2s 1.6s forwards;
+  }
+  .selva-verse.reveal-now { animation-delay: 1.9s; }
+  .selva-tr.reveal-now { animation-delay: 2.6s; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  .scroll-cue {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--caps);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--ember);
+    opacity: 0;
+    animation: fadein 1s 3.2s forwards;
+  }
+  .scroll-cue i {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(var(--ember), transparent);
+    animation: cue 2s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes cue {
+    0% { transform: scaleY(0); opacity: 1; }
+    70% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+  }
+</style>

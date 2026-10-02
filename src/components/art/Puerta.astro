@@ -1,0 +1,90 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(5);
+// rough stone blocks for the wall around the gate
+const blocks = range(70).map(() => {
+  const x = r() * 1600;
+  const y = r() * 900;
+  return { x: r1(x), y: r1(y), w: r1(60 + r() * 140), h: r1(30 + r() * 50), o: r1(0.08 + r() * 0.12) };
+});
+const voussoirs = range(17).map((i) => {
+  const a = Math.PI + (i / 16) * Math.PI;
+  const cx = 800, cy = 450;
+  return `M${r1(cx + Math.cos(a) * 160)} ${r1(cy + Math.sin(a) * 160)}L${r1(cx + Math.cos(a) * 230)} ${r1(cy + Math.sin(a) * 230)}`;
+});
+const studs = range(8).flatMap((row) => range(3).map((col) => ({ row, col })));
+const lines = [
+  'PER ME SI VA NE LA CITTÀ DOLENTE,',
+  "PER ME SI VA NE L'ETTERNO DOLORE,",
+  'PER ME SI VA TRA LA PERDUTA GENTE.',
+];
+---
+<section class="pin gate" id="puerta" data-scene data-pin="gate" data-mode="embers" data-bg="#0a0504" data-glow="#3a0a02" data-level="0" data-label="La Puerta">
+  <div class="pin-stage">
+    <svg class="gate-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1a1411" />
+          <stop offset="1" stop-color="#0b0807" />
+        </linearGradient>
+        <radialGradient id="hell" cx="0.5" cy="0.75" r="0.8">
+          <stop offset="0" stop-color="#ffe2a0" />
+          <stop offset="0.25" stop-color="#ff6a1a" />
+          <stop offset="0.6" stop-color="#8a0d02" />
+          <stop offset="1" stop-color="#1a0201" />
+        </radialGradient>
+        <linearGradient id="door" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1b120d" />
+          <stop offset="0.5" stop-color="#2b1d14" />
+          <stop offset="1" stop-color="#150d09" />
+        </linearGradient>
+        <clipPath id="opening"><path d="M640 900V450A160 160 0 0 1 960 450V900Z" /></clipPath>
+        <path id="archText" d="M605 450A195 195 0 0 1 995 450" />
+      </defs>
+      <g class="gate-world">
+        <rect width="1600" height="900" fill="url(#rock)" />
+        {blocks.map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill="none" stroke="#3b2c22" stroke-opacity={b.o} />)}
+        <!-- hell beyond -->
+        <g clip-path="url(#opening)">
+          <rect x="600" y="280" width="400" height="640" fill="url(#hell)" class="gate-glow" />
+          {range(9).map((i) => (
+            <use href="#flame" x={650 + i * 36} y={770 + (i % 3) * 20} width="40" height="90" class="flick" style={`animation-delay:${i * 0.13}s`} />
+          ))}
+          <g class="gate-door-l"><rect x="640" y="280" width="160" height="620" fill="url(#door)" />
+            {studs.map((s) => <circle cx={668 + s.col * 52} cy={330 + s.row * 70} r="5" fill="#5a463a" />)}
+            <rect x="640" y="280" width="160" height="620" fill="none" stroke="#000" stroke-width="6" />
+          </g>
+          <g class="gate-door-r"><rect x="800" y="280" width="160" height="620" fill="url(#door)" />
+            {studs.map((s) => <circle cx={828 + s.col * 52} cy={330 + s.row * 70} r="5" fill="#5a463a" />)}
+            <rect x="800" y="280" width="160" height="620" fill="none" stroke="#000" stroke-width="6" />
+          </g>
+        </g>
+        <!-- arch -->
+        <path d="M560 900V450A240 240 0 0 1 1040 450V900H960V450A160 160 0 0 0 640 450V900Z" fill="#2a201a" stroke="#000" stroke-width="3" />
+        <path d={voussoirs.join('')} stroke="#120c09" stroke-width="3" />
+        <text class="gate-arch-text" font-family="Cinzel" font-size="23" font-weight="800" letter-spacing="2" fill="#5a4636">
+          <textPath href="#archText" startOffset="50%" text-anchor="middle">LASCIATE OGNE SPERANZA, VOI CH'INTRATE</textPath>
+        </text>
+        <!-- tablet -->
+        <rect x="430" y="40" width="740" height="160" fill="#211915" stroke="#000" stroke-width="3" />
+        <rect x="442" y="52" width="716" height="136" fill="none" stroke="#3d2f25" />
+        {lines.map((l, i) => (
+          <text class="gate-line" x="800" y={100 + i * 38} text-anchor="middle" font-family="Cinzel" font-size="24" font-weight="600" fill="#c9a77a" letter-spacing="3">{l}</text>
+        ))}
+      </g>
+      <rect class="gate-flash" width="1600" height="900" fill="#ff4a10" opacity="0" />
+    </svg>
+  </div>
+  <div class="pin-caption gate-caption">
+    <p class="it">«Lasciate ogne speranza, voi ch'intrate»</p>
+    <p class="tr">Abandonad toda esperanza, vosotros que entráis.</p>
+    <cite>Inferno III, 9</cite>
+  </div>
+</section>
+
+<style>
+  .gate-door-l { transform-box: fill-box; transform-origin: 0% 50%; }
+  .gate-door-r { transform-box: fill-box; transform-origin: 100% 50%; }
+  .gate-world { transform-origin: 800px 600px; }
+  .gate-caption { opacity: 0; }
+</style>

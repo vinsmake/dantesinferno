@@ -1,0 +1,51 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(99);
+const flakes = range(36).map(() => ({ x: r1(r() * 1200), d: r1(r() * -6), t: r1(4 + r() * 3), s: r1(0.6 + r() * 0.9) }));
+const embers = range(16).map(() => ({ x: r1(40 + r() * 1120), y: r1(330 + r() * 160), d: r1(r() * -1) }));
+const usurers = range(5).map((i) => ({ x: 860 + i * 62, y: 420 + (i % 2) * 22, c: ['#d4ae5a', '#4a8ad0', '#c42a2a', '#e8e0d0', '#3aa05a'][i] }));
+---
+<svg viewBox="0 0 1200 520" aria-hidden="true">
+  <defs>
+    <linearGradient id="sab-sand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a3a12" />
+      <stop offset="0.4" stop-color="#4a200a" />
+      <stop offset="1" stop-color="#140703" />
+    </linearGradient>
+  </defs>
+  <path d="M0 300 Q200 280 400 300 T800 290 T1200 305 V520 H0Z" fill="url(#sab-sand)" />
+  <path d="M0 300 Q200 280 400 300 T800 290 T1200 305" stroke="#ffb347" stroke-opacity="0.35" stroke-width="2" fill="none" />
+  {embers.map((e) => (
+    <use href="#flame" x={e.x} y={e.y - 30} width="16" height="30" class="flick" style={`animation-delay:${e.d}s`} />
+  ))}
+  <!-- Capaneus, lying supine and defiant -->
+  <g transform="translate(220 430) rotate(-90)">
+    <use href="#soul-arms" x="-25" y="-25" width="50" height="80" fill="#1a0b05" />
+  </g>
+  <text x="250" y="480" text-anchor="middle" font-family="Cinzel" font-size="13" fill="#ffcf7a" opacity="0.8">Capaneo</text>
+  <!-- the running sodomites -->
+  <g class="sab-run">
+    {range(7).map((i) => (
+      <use href="#soul-run" x={i * 40} y={330 + (i % 3) * 14} width="30" height="50" fill="#2a120a" />
+    ))}
+  </g>
+  <!-- usurers, crouched with purses -->
+  {usurers.map((u) => (
+    <g transform={`translate(${u.x} ${u.y})`}>
+      <path d="M-14 30C-18 10 -10 -6 0 -8C10 -6 18 10 14 30Z" fill="#1a0b05" />
+      <circle cx="0" cy="-14" r="7" fill="#1a0b05" />
+      <rect x="-8" y="0" width="16" height="14" rx="3" fill={u.c} opacity="0.85" />
+    </g>
+  ))}
+  {flakes.map((f) => (
+    <g transform={`translate(${f.x} 0) scale(${f.s})`}>
+      <ellipse rx="7" ry="11" fill="url(#g-eye)" class="sab-flake" style={`animation-delay:${f.d}s;animation-duration:${f.t}s`} />
+    </g>
+  ))}
+</svg>
+<style>
+  .sab-flake { animation: sab-fall linear infinite; opacity: 0; }
+  @keyframes sab-fall { 0% { transform: translate(0, -20px); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(-40px, 440px); opacity: 0; } }
+  .sab-run { animation: sab-go 10s linear infinite; }
+  @keyframes sab-go { from { transform: translateX(-300px); } to { transform: translateX(1300px); } }
+</style>

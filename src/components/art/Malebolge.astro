@@ -1,0 +1,115 @@
+---
+import { range } from '../../lib/rng';
+const cx = 600, cy = 330;
+const rings = range(11).map((i) => {
+  const rx = 560 - i * 46;
+  return { i, rx, ry: rx * 0.4, y: cy + i * 9 };
+});
+const ditchColor = ['#5a1a10', '#3a2a10', '#ff5a12', '#2a2030', '#120a06', '#c9a24a', '#2a4a2a', '#ff8a2a', '#8a0d0a', '#4a5a3a'];
+const bridges = [-100, -60, -20, 200, 240];
+const bolge = [
+  { n: 'I', t: 'Rufianes y seductores', p: 'Marchan en dos filas opuestas, azotados por demonios cornudos.', s: 'Jasón', icon: 'whip' },
+  { n: 'II', t: 'Aduladores', p: 'Hundidos en excremento humano, como sus palabras en vida.', s: 'Thaís', icon: 'muck' },
+  { n: 'III', t: 'Simoníacos', p: 'Cabeza abajo en agujeros de piedra; las plantas de los pies, en llamas.', s: 'Nicolás III', icon: 'feet' },
+  { n: 'IV', t: 'Adivinos', p: 'Con la cabeza torcida hacia atrás, caminan llorando de espaldas.', s: 'Tiresias · Manto', icon: 'twist' },
+  { n: 'V', t: 'Barateros', p: 'Hervidos en brea; los Malebranche los ensartan con garfios.', s: 'Ciampolo', icon: 'pitch' },
+  { n: 'VI', t: 'Hipócritas', p: 'Capas de plomo doradas por fuera, aplastantes por dentro.', s: 'Caifás', icon: 'cape' },
+  { n: 'VII', t: 'Ladrones', p: 'Mordidos por serpientes, arden en ceniza y se transforman en ellas.', s: 'Vanni Fucci', icon: 'snake' },
+  { n: 'VIII', t: 'Malos consejeros', p: 'Cada alma, oculta dentro de una llama que habla.', s: 'Ulises y Diomedes', icon: 'flame' },
+  { n: 'IX', t: 'Sembradores de discordia', p: 'Un demonio con espada los parte una y otra vez.', s: 'Bertran de Born', icon: 'sword' },
+  { n: 'X', t: 'Falsarios', p: 'Plagados de lepra, sarna, fiebre e hidropesía, en la pestilencia.', s: 'Maestro Adamo', icon: 'plague' },
+];
+---
+<div class="mb">
+  <svg class="mb-map" viewBox="0 0 1200 640" aria-hidden="true">
+    <defs>
+      <radialGradient id="mb-well" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#9fd8ff" stop-opacity="0.5" />
+        <stop offset="0.5" stop-color="#0a1a2a" />
+        <stop offset="1" stop-color="#000" />
+      </radialGradient>
+    </defs>
+    {rings.slice(0, 10).map((r) => (
+      <g>
+        <ellipse cx={cx} cy={r.y} rx={r.rx} ry={r.ry} fill="#1a0f0b" stroke="#3a2a22" stroke-width="2" />
+        <ellipse cx={cx} cy={r.y + 6} rx={r.rx - 20} ry={r.ry - 8} fill={ditchColor[r.i]} opacity="0.55" class="mb-glow" style={`animation-delay:${r.i * 0.25}s`} />
+        <ellipse cx={cx} cy={r.y + 8} rx={r.rx - 26} ry={r.ry - 11} fill="#0a0605" />
+      </g>
+    ))}
+    <ellipse cx={cx} cy={rings[10].y} rx={rings[10].rx} ry={rings[10].ry} fill="url(#mb-well)" />
+    {bridges.map((a) => {
+      const t = (a * Math.PI) / 180;
+      const p1 = [cx + Math.cos(t) * 560, cy + Math.sin(t) * 224];
+      const p2 = [cx + Math.cos(t) * 100, cy + 90 + Math.sin(t) * 40];
+      return <path d={`M${p1[0]} ${p1[1]}L${p2[0]} ${p2[1]}`} stroke="#5a463a" stroke-width="7" stroke-dasharray="40 8" />;
+    })}
+    {rings.slice(0, 10).map((r) => (
+      <text x={cx} y={r.y + r.ry + 3} text-anchor="middle" font-family="Cinzel" font-size="12" fill="#e8cfa0" opacity="0.75">{bolge[r.i].n}</text>
+    ))}
+  </svg>
+
+  <ol class="mb-grid">
+    {bolge.map((b) => (
+      <li class="mb-card reveal">
+        <svg viewBox="0 0 80 80" class={`mb-icon ic-${b.icon}`} aria-hidden="true">
+          {b.icon === 'whip' && (<g><use href="#soul-run" x="8" y="30" width="28" height="46" fill="#b9a890" /><path class="ic-lash" d="M60 10Q40 20 44 40T30 60" stroke="#ff8a4a" stroke-width="3" fill="none" /><path d="M58 30L66 8 70 30Z" fill="#5a1a10" /></g>)}
+          {b.icon === 'muck' && (<g><path d="M0 56Q20 48 40 56T80 56V80H0Z" fill="#4a3a1a" /><circle cx="40" cy="48" r="9" fill="#6a5a3a" class="bob" /><circle cx="20" cy="60" r="3" fill="none" stroke="#8a7a4a" class="pulse" /></g>)}
+          {b.icon === 'feet' && (<g><rect x="10" y="60" width="60" height="20" fill="#3a2a22" /><path d="M32 60V30M48 60V30" stroke="#b9a890" stroke-width="7" stroke-linecap="round" /><use href="#flame" x="24" y="2" width="16" height="30" class="flick" /><use href="#flame" x="40" y="2" width="16" height="30" class="flick" style="animation-delay:-.3s" /></g>)}
+          {b.icon === 'twist' && (<g><use href="#soul" x="30" y="24" width="20" height="50" fill="#9aa3a8" /><g class="ic-spin"><circle cx="40" cy="20" r="9" fill="#9aa3a8" /><circle cx="44" cy="17" r="1.6" fill="#000" /></g><path d="M52 40L64 40" stroke="#9fd8ff" stroke-width="2" marker-end="" /></g>)}
+          {b.icon === 'pitch' && (<g><path d="M0 50Q20 44 40 50T80 50V80H0Z" fill="#050303" /><circle cx="30" cy="46" r="6" fill="#1a1010" class="bob" /><path d="M60 0V40M60 40Q60 52 50 50" stroke="#8a7a6a" stroke-width="3" fill="none" class="ic-hook" /><circle cx="18" cy="56" r="2" fill="none" stroke="#ff8a4a" class="pulse" /></g>)}
+          {b.icon === 'cape' && (<g class="ic-trudge"><circle cx="40" cy="18" r="8" fill="#c9a24a" /><path d="M40 14C18 18 14 50 12 76H68C66 50 62 18 40 14Z" fill="#d4ae5a" opacity="0.85" /><path d="M22 40H58M18 58H62" stroke="#7a5a2a" /></g>)}
+          {b.icon === 'snake' && (<g><use href="#soul" x="30" y="24" width="20" height="50" fill="#9aa3a8" /><path class="ic-snake" d="M4 60C14 40 24 70 34 50S54 40 60 30 70 20 76 24" stroke="#4aa05a" stroke-width="5" fill="none" stroke-linecap="round" /></g>)}
+          {b.icon === 'flame' && (<g><use href="#flame" x="18" y="6" width="44" height="72" class="flick" /><use href="#flame" x="30" y="16" width="20" height="40" class="flick" style="animation-delay:-.4s" /></g>)}
+          {b.icon === 'sword' && (<g><use href="#soul" x="16" y="26" width="20" height="50" fill="#9aa3a8" /><g class="ic-slash"><path d="M50 8L70 66" stroke="#e8e8f0" stroke-width="4" /><path d="M44 14H58" stroke="#8a6a3a" stroke-width="4" /></g><path d="M26 44l2 4" stroke="#c42a2a" stroke-width="3" /></g>)}
+          {b.icon === 'plague' && (<g><path d="M20 76C10 60 14 34 40 30C66 34 70 60 60 76Z" fill="#6a7a4a" /><circle cx="40" cy="22" r="9" fill="#6a7a4a" />{[30, 46, 38, 52, 26].map((x, i) => <circle cx={x} cy={46 + (i % 3) * 9} r="3" fill="#a03a2a" class="pulse" style={`animation-delay:${i * 0.3}s`} />)}</g>)}
+        </svg>
+        <div>
+          <p class="mb-n">Bolgia {b.n}</p>
+          <h3>{b.t}</h3>
+          <p>{b.p}</p>
+          <p class="mb-s">{b.s}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+<style>
+  .mb-glow { animation: pulse 3s ease-in-out infinite; }
+  .mb-grid {
+    list-style: none;
+    margin: 6vh auto 0;
+    padding: 0 16px;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .mb-card {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid rgba(255, 106, 26, 0.18);
+    background: linear-gradient(160deg, rgba(60, 14, 6, 0.55), rgba(10, 4, 3, 0.7));
+    border-radius: 4px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .mb-card:hover { border-color: rgba(255, 106, 26, 0.6); transform: translateY(-3px); }
+  .mb-icon { width: 72px; height: 72px; overflow: visible; }
+  .mb-n { font-family: var(--caps); font-size: 11px; letter-spacing: 0.3em; color: var(--ember); margin: 0; }
+  .mb-card h3 { font-size: 18px; margin: 2px 0 6px; color: #f5e6c8; }
+  .mb-card p { margin: 0; font-size: 0.85em; line-height: 1.45; }
+  .mb-card .mb-s { margin-top: 8px; font-style: italic; color: var(--gold); }
+  .ic-lash { stroke-dasharray: 80; animation: ic-lash 1.2s ease-in-out infinite; }
+  @keyframes ic-lash { 0% { stroke-dashoffset: 80; } 40% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -80; } }
+  .ic-spin { transform-box: fill-box; transform-origin: center; animation: ic-turn 3s ease-in-out infinite; }
+  @keyframes ic-turn { 0%, 30% { transform: rotate(0); } 50%, 80% { transform: rotate(180deg); } 100% { transform: rotate(0); } }
+  .ic-hook { animation: ic-poke 1.5s ease-in-out infinite; }
+  @keyframes ic-poke { 50% { transform: translateY(8px); } }
+  .ic-trudge { animation: ic-slow 4s ease-in-out infinite; }
+  @keyframes ic-slow { 50% { transform: translateX(4px) translateY(1px); } }
+  .ic-snake { stroke-dasharray: 100; animation: ic-coil 2.5s linear infinite; }
+  @keyframes ic-coil { 0% { stroke-dashoffset: 100; } 60%, 100% { stroke-dashoffset: 0; } }
+  .ic-slash { transform-box: fill-box; transform-origin: 30% 10%; animation: ic-cut 1.6s cubic-bezier(0.7, 0, 0.3, 1) infinite; }
+  @keyframes ic-cut { 0%, 40% { transform: rotate(-40deg); } 55%, 100% { transform: rotate(10deg); } }
+</style>

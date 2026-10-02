@@ -1,0 +1,28 @@
+---
+const levels = ['Vestíbulo', 'I · Limbo', 'II · Lujuria', 'III · Gula', 'IV · Avaricia', 'V · Ira', 'VI · Herejía', 'VII · Violencia', 'VIII · Fraude', 'IX · Traición', 'Lucifer'];
+const bands = levels.map((name, i) => {
+  const top = 148 - i * 12.4;
+  const bot = top - 12.4;
+  const y = i * 27;
+  const pts = `${75 - top / 2},${y} ${75 + top / 2},${y} ${75 + bot / 2},${y + 25} ${75 - bot / 2},${y + 25}`;
+  return { name, i, pts, y };
+});
+---
+<div class="hud hud-progress" aria-hidden="true"><i id="hud-bar"></i></div>
+<div class="hud hud-brand" aria-hidden="true"><b>INFERNO</b> · Dante Alighieri</div>
+<div class="hud hud-depth" aria-live="off">
+  <span id="hud-label">La selva oscura</span>
+  <b id="hud-km">0 km</b>
+  <em id="hud-dir">bajo tierra</em>
+</div>
+<nav class="hud hud-map" aria-hidden="true">
+  <svg viewBox="0 -4 150 305">
+    {bands.map((b) => (
+      <g>
+        <polygon points={b.pts} class="band" data-band={b.i} />
+        <text x="75" y={b.y + 15.5} text-anchor="middle" data-band-label={b.i}>{b.name}</text>
+      </g>
+    ))}
+    <circle id="hud-dot" cx="75" cy="0" r="3" fill="#fff" filter="url(#f-glow)" />
+  </svg>
+</nav>

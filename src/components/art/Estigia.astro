@@ -1,0 +1,65 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(44);
+const wave = (y: number, a: number) => {
+  let d = `M0 ${y}`;
+  for (let x = 0; x <= 2400; x += 120) d += ` Q${x + 30} ${y - a} ${x + 60} ${y} T${x + 120} ${y}`;
+  return d + ` V620 H0Z`;
+};
+const wrathful = range(16).map((i) => ({
+  x: r1(80 + i * 66 + r() * 30),
+  y: r1(380 + r() * 120),
+  s: r1(0.8 + r() * 0.5),
+  d: r1(r() * -2),
+  flip: r() > 0.5,
+}));
+const bubbles = range(22).map(() => ({ x: r1(30 + r() * 1140), y: r1(440 + r() * 150), r: r1(3 + r() * 7), d: r1(r() * -4), t: r1(2.5 + r() * 2.5) }));
+---
+<svg viewBox="0 0 1200 620" aria-hidden="true">
+  <defs>
+    <linearGradient id="sty-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2a1d" />
+      <stop offset="1" stop-color="#050805" />
+    </linearGradient>
+  </defs>
+  <!-- distant walls of Dis -->
+  <path d="M0 330 L1200 330 L1200 300 L1150 300 L1150 280 L1120 280 L1120 300 L900 300 L900 250 L870 250 L870 300 L600 300 L600 290 L560 290 L560 300 L300 300 L300 260 L270 260 L270 300 L0 300Z" fill="#200805" />
+  <rect x="0" y="295" width="1200" height="6" fill="#ff4a10" opacity="0.4" class="pulse" />
+  <!-- signal towers -->
+  <g transform="translate(270 255)"><use href="#flame" x="-6" y="-26" width="16" height="28" class="flick sty-signal" /><use href="#flame" x="10" y="-22" width="13" height="24" class="flick sty-signal" /></g>
+  <g transform="translate(870 245)"><use href="#flame" x="2" y="-24" width="16" height="28" class="flick sty-signal sty-answer" /></g>
+  <!-- the wrathful in the mud -->
+  {wave(400, 6) && <path d={wave(400, 6)} fill="url(#sty-water)" class="sty-wave" style="animation-duration:22s" />}
+  {wrathful.map((w) => (
+    <g transform={`translate(${w.x} ${w.y}) scale(${w.flip ? -w.s : w.s} ${w.s})`}>
+      <use href="#soul-arms" x="-15" y="-50" width="30" height="50" fill="#5e6650" class="sty-fight" style={`animation-delay:${w.d}s`} />
+    </g>
+  ))}
+  <path d={wave(430, 8)} fill="url(#sty-water)" fill-opacity="0.85" class="sty-wave" style="animation-duration:16s" />
+  <!-- Phlegyas' skiff -->
+  <g class="sty-boat">
+    <g transform="translate(0 440)">
+      <path d="M-70 0L-58 16H50L72 -6Z" fill="#0c0a08" stroke="#3a3122" />
+      <use href="#soul" x="30" y="-50" width="20" height="50" fill="#0c0a08" />
+      <line x1="44" y1="-30" x2="10" y2="20" stroke="#3a3122" stroke-width="3" />
+      <circle cx="38" cy="-44" r="2" fill="#ff5a12" />
+    </g>
+  </g>
+  {bubbles.map((b) => (
+    <circle cx={b.x} cy={b.y} r={b.r} fill="none" stroke="#9fb37a" stroke-opacity="0.5" class="sty-bubble" style={`animation-delay:${b.d}s;animation-duration:${b.t}s`} />
+  ))}
+  <path d={wave(470, 10)} fill="url(#sty-water)" class="sty-wave" style="animation-duration:12s" />
+</svg>
+<style>
+  .sty-wave { animation: sty-flow linear infinite; }
+  @keyframes sty-flow { to { transform: translateX(-1200px); } }
+  .sty-fight { transform-box: fill-box; transform-origin: 50% 100%; animation: sty-hit 1.1s ease-in-out infinite alternate; }
+  @keyframes sty-hit { from { transform: rotate(-10deg) translateY(8px); } to { transform: rotate(14deg) translateY(-6px); } }
+  .sty-bubble { transform-box: fill-box; transform-origin: center; animation: sty-rise ease-in infinite; }
+  @keyframes sty-rise { 0% { transform: translateY(0) scale(0.4); opacity: 0; } 20% { opacity: 1; } 85% { transform: translateY(-40px) scale(1); opacity: 0.9; } 100% { transform: translateY(-46px) scale(1.6); opacity: 0; } }
+  .sty-boat { animation: sty-sail 9s linear infinite; }
+  @keyframes sty-sail { from { transform: translateX(1300px); } to { transform: translateX(-120px); } }
+  .sty-signal { animation-duration: 0.5s; }
+  .sty-answer { animation: flick 0.5s infinite alternate, sty-reply 4s infinite; }
+  @keyframes sty-reply { 0%, 40% { opacity: 0; } 50%, 100% { opacity: 1; } }
+</style>

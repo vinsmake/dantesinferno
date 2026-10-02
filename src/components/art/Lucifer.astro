@@ -1,0 +1,100 @@
+---
+const wing = 'M0 0C60-120 180-220 360-250 420-200 470-120 520-40 470-60 440-40 420 0 380-40 330-30 300 10 260-20 210-10 190 30 150 0 90 10 0 40Z';
+const bones = 'M0 0L360-250M0 0L520-40M0 0L420 0M0 0L300 10M0 0L190 30';
+const pairs = [
+  { rot: -18, s: 1.05, d: 0 },
+  { rot: 8, s: 0.9, d: -0.15 },
+  { rot: 34, s: 0.72, d: -0.3 },
+];
+const faces = [
+  { x: 650, y: 360, r: 62, fill: '#b9ac72', eye: '#fff4c0', name: 'casio' },
+  { x: 950, y: 360, r: 62, fill: '#100b0b', eye: '#ff3a10', name: 'bruto' },
+  { x: 800, y: 320, r: 84, fill: '#8a0f0b', eye: '#ffd27a', name: 'judas' },
+];
+---
+<section class="pin lucifer" id="lucifer" data-scene data-pin="lucifer" data-mode="icewind" data-bg="#030509" data-glow="#0e2238" data-level="10" data-label="Lucifer">
+  <div class="pin-title">
+    <p class="kicker">Canto XXXIV · El centro de la Tierra</p>
+    <h2 class="title">Lucifer</h2>
+  </div>
+  <div class="pin-stage">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="lu-ice" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#cfe8fa" />
+          <stop offset="0.3" stop-color="#5a8bb0" />
+          <stop offset="1" stop-color="#06111c" />
+        </linearGradient>
+        <linearGradient id="lu-wing" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1a0d0c" />
+          <stop offset="1" stop-color="#2c1814" stop-opacity="0.85" />
+        </linearGradient>
+        <filter id="lu-fur"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" /><feDisplacementMap in="SourceGraphic" scale="10" /></filter>
+      </defs>
+      <rect width="1600" height="900" fill="#020407" />
+      <ellipse cx="800" cy="900" rx="1100" ry="380" fill="url(#g-cold)" opacity="0.4" />
+      <g class="lu-body">
+        <!-- six wings -->
+        {pairs.map((p) => (
+          <>
+            <g transform={`translate(960 480) rotate(${p.rot}) scale(${p.s})`}>
+              <g class="lu-wing" style={`animation-delay:${p.d}s`}><path d={wing} fill="url(#lu-wing)" /><path d={bones} stroke="#3a221c" stroke-width="5" /></g>
+            </g>
+            <g transform={`translate(640 480) scale(-1 1) rotate(${p.rot}) scale(${p.s})`}>
+              <g class="lu-wing" style={`animation-delay:${p.d}s`}><path d={wing} fill="url(#lu-wing)" /><path d={bones} stroke="#3a221c" stroke-width="5" /></g>
+            </g>
+          </>
+        ))}
+        <!-- torso, hairy -->
+        <path d="M540 760C540 580 600 470 690 440H910C1000 470 1060 580 1060 760Z" fill="#170a09" filter="url(#lu-fur)" />
+        <path d="M560 560C520 620 520 700 540 760M1040 560C1080 620 1080 700 1060 760" stroke="#170a09" stroke-width="60" stroke-linecap="round" fill="none" />
+        <!-- the sinners in his mouths -->
+        <g class="lu-kick"><path d="M792 380L770 470M808 380L830 466" stroke="#7a6a5e" stroke-width="12" stroke-linecap="round" /></g>
+        <g transform="translate(610 395) rotate(30)"><use href="#soul" x="-12" y="0" width="24" height="60" fill="#5e544c" class="lu-dangle" /></g>
+        <g transform="translate(990 395) rotate(-30)"><use href="#soul" x="-12" y="0" width="24" height="60" fill="#5e544c" class="lu-dangle" style="animation-delay:-.6s" /></g>
+        <!-- three faces -->
+        {faces.map((f) => (
+          <g>
+            <path d={`M${f.x - f.r * 0.7} ${f.y - f.r * 0.6}C${f.x - f.r * 1.2} ${f.y - f.r * 1.4} ${f.x - f.r * 0.9} ${f.y - f.r * 1.9} ${f.x - f.r * 1.3} ${f.y - f.r * 2.1}C${f.x - f.r * 0.5} ${f.y - f.r * 1.7} ${f.x - f.r * 0.3} ${f.y - f.r} ${f.x - f.r * 0.3} ${f.y - f.r * 0.8}Z`} fill="#2a1a14" />
+            <path d={`M${f.x + f.r * 0.7} ${f.y - f.r * 0.6}C${f.x + f.r * 1.2} ${f.y - f.r * 1.4} ${f.x + f.r * 0.9} ${f.y - f.r * 1.9} ${f.x + f.r * 1.3} ${f.y - f.r * 2.1}C${f.x + f.r * 0.5} ${f.y - f.r * 1.7} ${f.x + f.r * 0.3} ${f.y - f.r} ${f.x + f.r * 0.3} ${f.y - f.r * 0.8}Z`} fill="#2a1a14" />
+            <ellipse cx={f.x} cy={f.y} rx={f.r} ry={f.r * 1.12} fill={f.fill} stroke="#000" stroke-width="3" />
+            <path d={`M${f.x - f.r * 0.55} ${f.y - f.r * 0.3}L${f.x - f.r * 0.12} ${f.y - f.r * 0.12}M${f.x + f.r * 0.55} ${f.y - f.r * 0.3}L${f.x + f.r * 0.12} ${f.y - f.r * 0.12}`} stroke="#000" stroke-width="5" />
+            <g filter="url(#f-glow)">
+              <ellipse cx={f.x - f.r * 0.32} cy={f.y - f.r * 0.05} rx={f.r * 0.12} ry={f.r * 0.07} fill={f.eye} class="pulse" />
+              <ellipse cx={f.x + f.r * 0.32} cy={f.y - f.r * 0.05} rx={f.r * 0.12} ry={f.r * 0.07} fill={f.eye} class="pulse" />
+            </g>
+            <ellipse cx={f.x} cy={f.y + f.r * 0.6} rx={f.r * 0.45} ry={f.r * 0.22} fill="#120202" class="lu-chew" />
+            <path d={`M${f.x - f.r * 0.4} ${f.y + f.r * 0.5}l${f.r * 0.1} ${f.r * 0.14} ${f.r * 0.1}-${f.r * 0.14} ${f.r * 0.1} ${f.r * 0.14} ${f.r * 0.1}-${f.r * 0.14} ${f.r * 0.1} ${f.r * 0.14} ${f.r * 0.1}-${f.r * 0.14} ${f.r * 0.1} ${f.r * 0.14} ${f.r * 0.1}-${f.r * 0.14}`} stroke="#d8cdb4" stroke-width="2" fill="none" />
+            {[-0.32, 0.32].map((k, i) => (
+              <circle cx={f.x + f.r * k} cy={f.y + f.r * 0.05} r="3" fill="#cfe8fa" class="lu-tear" style={`animation-delay:${i * 0.7 + f.r * 0.01}s`} />
+            ))}
+          </g>
+        ))}
+      </g>
+      <!-- the frozen lake up to his mid-chest -->
+      <path d="M0 640C400 610 1200 610 1600 640V900H0Z" fill="url(#lu-ice)" />
+      <path d="M0 640C400 610 1200 610 1600 640" stroke="#eaf6ff" stroke-width="3" fill="none" opacity="0.8" />
+      <path d="M200 700L320 690 380 720M900 760L1040 740 1100 770 1200 750M500 820L620 800" stroke="#eaf6ff" stroke-opacity="0.5" fill="none" />
+      <!-- Dante & Virgil, tiny -->
+      <use href="#soul" x="300" y="590" width="14" height="36" fill="#e6d9c2" />
+      <use href="#soul" x="318" y="586" width="15" height="40" fill="#c9bfa8" />
+    </svg>
+  </div>
+  <div class="pin-caption">
+    <p class="it">Lo 'mperador del doloroso regno<br />da mezzo 'l petto uscia fuor de la ghiaccia</p>
+    <p class="tr">El emperador del doloroso reino emergía del hielo desde la mitad del pecho. Con tres rostros mastica a Judas, Bruto y Casio; el viento de sus seis alas congela el Cocito.</p>
+    <cite>Inferno XXXIV, 28–29</cite>
+  </div>
+</section>
+<style>
+  .lu-wing { animation: lu-flap 2.6s ease-in-out infinite; }
+  @keyframes lu-flap { 0%, 100% { transform: rotate(-14deg) scale(1, 1); } 50% { transform: rotate(12deg) scale(1, 0.72); } }
+  .lu-kick { transform-box: fill-box; transform-origin: 50% 0%; animation: lu-k 0.5s ease-in-out infinite alternate; }
+  @keyframes lu-k { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+  .lu-dangle { transform-box: fill-box; transform-origin: 50% 0%; animation: lu-swing 1.4s ease-in-out infinite alternate; }
+  @keyframes lu-swing { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+  .lu-chew { transform-box: fill-box; transform-origin: center; animation: lu-c 0.7s ease-in-out infinite alternate; }
+  @keyframes lu-c { to { transform: scaleY(1.6); } }
+  .lu-tear { animation: lu-t 2s ease-in infinite; opacity: 0; }
+  @keyframes lu-t { 0% { transform: translateY(0); opacity: 0.9; } 100% { transform: translateY(120px); opacity: 0; } }
+</style>

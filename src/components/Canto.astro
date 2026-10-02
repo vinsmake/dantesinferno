@@ -1,0 +1,69 @@
+---
+interface Props {
+  id: string;
+  mode: string;
+  bg: string;
+  glow: string;
+  level: number;
+  label: string;
+  num?: string;
+  kicker: string;
+  title: string;
+  sin?: string;
+  verse?: string[];
+  cite?: string;
+  translation?: string;
+  guardian?: string;
+  punishment?: string;
+  figures?: string[];
+  class?: string;
+}
+const p = Astro.props;
+---
+<section
+  class:list={['canto', p.class]}
+  id={p.id}
+  data-scene
+  data-mode={p.mode}
+  data-bg={p.bg}
+  data-glow={p.glow}
+  data-level={p.level}
+  data-label={p.label}
+>
+  {p.num && <div class="canto-num" data-speed="-0.4" aria-hidden="true">{p.num}</div>}
+  <div class="canto-art"><slot name="art" /></div>
+  <div class="canto-text">
+    <header class="canto-head">
+      <p class="kicker reveal">{p.kicker}</p>
+      <h2 class="title reveal">{p.title}</h2>
+      {p.sin && <p class="sin reveal">{p.sin}</p>}
+    </header>
+    {
+      p.verse && (
+        <blockquote class="verse reveal">
+          <p class="it split">
+            {p.verse.map((l, i) => (
+              <>
+                {l}
+                {i < p.verse!.length - 1 && <br />}
+              </>
+            ))}
+          </p>
+          <cite>{p.cite}</cite>
+          {p.translation && <p class="tr">«{p.translation}»</p>}
+        </blockquote>
+      )
+    }
+    <div class="info">
+      {p.punishment && (<div class="reveal"><h3>Castigo</h3><p>{p.punishment}</p></div>)}
+      {p.guardian && (<div class="reveal"><h3>Guardián</h3><p>{p.guardian}</p></div>)}
+      {p.figures && (
+        <div class="reveal">
+          <h3>Almas</h3>
+          <ul class="figures">{p.figures.map((f) => <li>{f}</li>)}</ul>
+        </div>
+      )}
+      <slot />
+    </div>
+  </div>
+</section>

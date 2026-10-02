@@ -1,0 +1,47 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(33);
+const bodies = range(40).map(() => ({ x: r1(40 + r() * 1120), y: r1(470 + r() * 110), rx: r1(22 + r() * 18), a: r1((r() - 0.5) * 30) }));
+const heads = [
+  { x: 380, y: 210, flip: true, rot: 12, d: 0 },
+  { x: 600, y: 150, flip: false, rot: -18, d: 0.35 },
+  { x: 800, y: 210, flip: false, rot: 8, d: 0.7 },
+];
+---
+<svg viewBox="0 0 1200 620" aria-hidden="true">
+  <defs>
+    <linearGradient id="gula-mud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26241d" />
+      <stop offset="1" stop-color="#0a0907" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="600" cy="540" rx="660" ry="120" fill="url(#gula-mud)" />
+  {bodies.map((b) => (
+    <g transform={`translate(${b.x} ${b.y}) rotate(${b.a})`} opacity="0.75">
+      <ellipse rx={b.rx} ry="7" fill="#4a4436" />
+      <circle cx={b.rx} cy="-2" r="7" fill="#5a5444" />
+    </g>
+  ))}
+  <!-- Cerberus -->
+  <g class="cerb" fill="#0b0806" stroke="#2c2016" stroke-width="2">
+    <path d="M520 360C470 320 440 290 410 260M600 340C600 290 610 240 615 190M680 360C730 320 760 290 800 260" stroke-width="54" stroke-linecap="round" fill="none" stroke="#0b0806" />
+    <path d="M600 330C520 330 430 380 410 470L380 560H460L470 500 520 560H690L740 500 750 560H830L800 470C780 380 690 330 600 330Z" />
+    {heads.map((h) => (
+      <g transform={`translate(${h.x} ${h.y}) rotate(${h.rot}) scale(${h.flip ? -1.3 : 1.3} 1.3) translate(-20 -40)`}>
+        <path d="M0 45C2 25 15 12 30 10L36-8 44 10 52-4 56 14C70 16 85 22 108 32L110 40C95 42 80 42 62 44 50 46 40 52 30 60 15 62 2 58 0 45Z" />
+        <g class="cerb-jaw" style={`animation-delay:${h.d}s`}>
+          <path d="M60 44C78 44 95 43 106 42 100 52 85 56 62 58Z" />
+          <path d="M66 46l4 5 4-5 4 5 4-5 4 5 4-5 4 5" stroke="#d8cdb4" stroke-width="1.5" fill="none" />
+        </g>
+        <circle cx="64" cy="26" r="7" fill="url(#g-eye)" stroke="none" class="pulse" />
+        <circle cx="64" cy="26" r="1.8" fill="#fff4c0" stroke="none" />
+      </g>
+    ))}
+  </g>
+</svg>
+<style>
+  .cerb-jaw { transform-box: fill-box; transform-origin: 0% 0%; animation: cerb-snap 1.4s ease-in-out infinite; }
+  @keyframes cerb-snap { 0%, 60%, 100% { transform: rotate(0); } 75% { transform: rotate(16deg); } }
+  .cerb { animation: cerb-breathe 3s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  @keyframes cerb-breathe { 50% { transform: scale(1.015, 1.03); } }
+</style>

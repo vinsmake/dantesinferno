@@ -1,0 +1,63 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(21);
+const cx = 600, cy = 300;
+const orbits = range(7).map((i) => {
+  const rx = 110 + i * 70;
+  const ry = rx * 0.32;
+  const tilt = (r() - 0.5) * 10;
+  const d = `M${cx - rx} ${cy}A${rx} ${ry} 0 1 1 ${cx + rx} ${cy}A${rx} ${ry} 0 1 1 ${cx - rx} ${cy}Z`;
+  const dur = r1(5 + i * 1.6 + r());
+  const souls = range(4 + i).map((k) => ({ begin: r1(-(k / (4 + i)) * dur - r() * 0.5), s: r1(0.6 + r() * 0.5) }));
+  return { i, rx, ry, tilt, d, dur, souls };
+});
+---
+<svg viewBox="0 0 1200 720" aria-hidden="true">
+  <defs>
+    <radialGradient id="luj-core" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffb3c6" stop-opacity="0.35" />
+      <stop offset="1" stop-color="#5a1030" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <ellipse cx={cx} cy={cy} rx="560" ry="260" fill="url(#luj-core)" class="pulse" />
+  <path class="luj-bolt" d="M880 0 L850 90 L880 100 L820 220 L860 120 L830 112 L870 0Z" fill="#fde4ff" />
+  {orbits.map((o) => (
+    <g transform={`rotate(${o.tilt} ${cx} ${cy})`}>
+      <path d={o.d} fill="none" stroke="#e7b6d2" stroke-opacity={0.12 + o.i * 0.02} stroke-width="1.5" stroke-dasharray="60 30 10 30" class="luj-wind" style={`animation-duration:${o.dur * 0.6}s`} />
+      {o.souls.map((s) => (
+        <g>
+          <animateMotion dur={`${o.dur}s`} begin={`${s.begin}s`} repeatCount="indefinite" rotate="auto" path={o.d} />
+          <g transform={`scale(${s.s}) rotate(90) translate(-10 -25)`}>
+            <use href="#soul" width="20" height="50" fill="#f1d9e2" fill-opacity="0.7" />
+          </g>
+        </g>
+      ))}
+    </g>
+  ))}
+  <!-- Paolo & Francesca, together forever -->
+  <g>
+    <animateMotion dur="11s" repeatCount="indefinite" rotate="auto" path={orbits[3].d} />
+    <g transform="rotate(90) translate(-22 -28)" filter="url(#f-glow)">
+      <use href="#soul" width="22" height="54" fill="#ffd6a0" />
+      <use href="#soul" x="16" y="4" width="22" height="54" fill="#ffc2c2" />
+    </g>
+  </g>
+  <!-- Minos, coiling his tail -->
+  <g transform="translate(600 610)">
+    <path d="M-70 110C-80 40 -60 -20 0 -30C60 -20 80 40 70 110Z" fill="#0c0708" />
+    <circle cx="0" cy="-48" r="28" fill="#0c0708" />
+    <path d="M-24 -70L-18 -96L-8 -78L0 -102L8 -78L18 -96L24 -70Z" fill="#c9a24a" opacity="0.8" />
+    <circle cx="-9" cy="-50" r="3" fill="#ff5a12" class="pulse" />
+    <circle cx="9" cy="-50" r="3" fill="#ff5a12" class="pulse" />
+    <path class="luj-tail" d="M60 90C140 80 150 20 110 0C70 -20 -100 -20 -120 20C-140 60 -60 90 0 80C70 70 120 50 100 20C80 -10 -60 -10 -80 20C-95 40 -40 60 10 55"
+      fill="none" stroke="#3a1a20" stroke-width="12" stroke-linecap="round" />
+  </g>
+</svg>
+<style>
+  .luj-wind { animation: luj-blow linear infinite; }
+  @keyframes luj-blow { to { stroke-dashoffset: -260; } }
+  .luj-bolt { opacity: 0; animation: luj-flash 7s infinite; }
+  @keyframes luj-flash { 0%, 90%, 94%, 100% { opacity: 0; } 91%, 93% { opacity: 0.9; } }
+  .luj-tail { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: luj-coil 6s ease-in-out infinite; }
+  @keyframes luj-coil { 0% { stroke-dashoffset: 1400; } 50%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1400; } }
+</style>

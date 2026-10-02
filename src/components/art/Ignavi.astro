@@ -1,0 +1,47 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(9);
+const crowd = range(46).map((i) => ({
+  x: r1(140 + (i / 46) * 1000 + r() * 30),
+  y: r1(330 + r() * 120),
+  s: r1(0.7 + r() * 0.6),
+  d: r1(r() * -1),
+  o: r1(0.35 + r() * 0.5),
+}));
+---
+<svg viewBox="0 0 1200 520" aria-hidden="true">
+  <defs>
+    <linearGradient id="ign-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1712" stop-opacity="0" />
+      <stop offset="0.4" stop-color="#1c1712" />
+      <stop offset="1" stop-color="#0a0806" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="600" cy="460" rx="640" ry="110" fill="url(#ign-ground)" />
+  <g class="ign-road">
+    {[0, -1200].map((off) => (
+      <g transform={`translate(${off} 0)`}>
+        <g transform="translate(1110 250)"><g class="ign-banner">
+          <line x1="0" y1="-40" x2="0" y2="140" stroke="#6b5a48" stroke-width="3" />
+          <path fill="#efe8da" opacity="0.85">
+            <animate attributeName="d" dur="0.9s" repeatCount="indefinite"
+              values="M0 -40 Q40 -60 80 -40 T160 -40 L160 20 Q120 0 80 20 T0 20Z;M0 -40 Q40 -20 80 -40 T160 -40 L160 20 Q120 40 80 20 T0 20Z;M0 -40 Q40 -60 80 -40 T160 -40 L160 20 Q120 0 80 20 T0 20Z" />
+          </path>
+        </g></g>
+        {crowd.map((c) => (
+          <g transform={`translate(${c.x} ${c.y}) scale(${c.s})`}>
+            <use href="#soul-run" width="30" height="50" x="-15" y="-50" fill="#b9b0a2" fill-opacity={c.o} class="ign-run" style={`animation-delay:${c.d}s`} />
+          </g>
+        ))}
+      </g>
+    ))}
+  </g>
+</svg>
+<style>
+  .ign-road { animation: ign-march 16s linear infinite; }
+  @keyframes ign-march { from { transform: translateX(0); } to { transform: translateX(1200px); } }
+  .ign-run { animation: ign-hop 0.45s ease-in-out infinite alternate; transform-box: fill-box; }
+  @keyframes ign-hop { from { transform: translateY(0) rotate(4deg); } to { transform: translateY(-7px) rotate(10deg); } }
+  .ign-banner { animation: ign-spin 3s ease-in-out infinite; }
+  @keyframes ign-spin { 0%,100% { transform: rotate(4deg); } 50% { transform: translateY(-20px) rotate(-10deg); } }
+</style>

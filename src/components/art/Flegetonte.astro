@@ -1,0 +1,69 @@
+---
+import { rng, r1, range } from '../../lib/rng';
+const r = rng(71);
+const wave = (y: number, a: number) => {
+  let d = `M0 ${y}`;
+  for (let x = 0; x <= 2400; x += 100) d += ` Q${x + 25} ${y - a} ${x + 50} ${y} T${x + 100} ${y}`;
+  return d + ` V560 H0Z`;
+};
+const heads = range(24).map(() => ({ x: r1(40 + r() * 1120), y: r1(330 + r() * 160), s: r1(0.7 + r() * 0.6), d: r1(r() * -3) }));
+const centaur = 'M14 62C14 52 24 48 40 48H84L86 30C84 24 86 18 90 16C88 10 90 4 96 4S104 10 102 16C106 18 108 24 106 30L104 48C110 50 112 56 110 64L108 76 112 104H106L100 80 92 78 88 104H82V78H44L38 104H32L34 78 26 76 20 104H14L18 74C10 72 6 80 2 92 0 80 6 66 14 62Z';
+const centaurs = [
+  { x: 180, d: 0 },
+  { x: 560, d: -4 },
+  { x: 900, d: -8 },
+];
+---
+<svg viewBox="0 0 1200 560" aria-hidden="true">
+  <defs>
+    <linearGradient id="fle-blood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c0160c" />
+      <stop offset="0.5" stop-color="#6e0805" />
+      <stop offset="1" stop-color="#220201" />
+    </linearGradient>
+  </defs>
+  <path d="M0 230 Q300 200 600 225 T1200 215 V290 H0Z" fill="#2a120a" />
+  {centaurs.map((c) => (
+    <g class="fle-patrol" style={`animation-delay:${c.d}s`}>
+      <g transform={`translate(${c.x} 130)`}>
+        <g class="fle-gallop">
+          <path d={centaur} fill="#0d0605" stroke="#ff7a2a" stroke-opacity="0.7" stroke-width="1.5" />
+          <path d="M112 8Q130 32 112 56" stroke="#5a3a22" stroke-width="3" fill="none" />
+          <line x1="112" y1="8" x2="112" y2="56" stroke="#a08870" stroke-width="1" />
+        </g>
+      </g>
+    </g>
+  ))}
+  {range(6).map((i) => (
+    <line x1="0" y1="0" x2="34" y2="10" stroke="#e8d4b0" stroke-width="2" class="fle-arrow" style={`animation-delay:${i * 0.9}s;--x:${200 + i * 160}px`} />
+  ))}
+  <path d={wave(290, 6)} fill="url(#fle-blood)" class="fle-wave" style="animation-duration:20s" />
+  {heads.map((h) => (
+    <g transform={`translate(${h.x} ${h.y}) scale(${h.s})`}>
+      <g class="fle-sink" style={`animation-delay:${h.d}s`}>
+        <circle cx="0" cy="-8" r="10" fill="#3a0806" />
+        <circle cx="-3" cy="-10" r="1.4" fill="#ffcf7a" />
+        <circle cx="3" cy="-10" r="1.4" fill="#ffcf7a" />
+      </g>
+    </g>
+  ))}
+  <path d={wave(330, 8)} fill="url(#fle-blood)" fill-opacity="0.75" class="fle-wave" style="animation-duration:14s" />
+  <path d={wave(420, 10)} fill="url(#fle-blood)" fill-opacity="0.6" class="fle-wave" style="animation-duration:10s" />
+</svg>
+<style>
+  .fle-wave { animation: fle-flow linear infinite; }
+  @keyframes fle-flow { to { transform: translateX(-1200px); } }
+  .fle-sink { animation: fle-bob 3s ease-in-out infinite; }
+  @keyframes fle-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+  .fle-patrol { animation: fle-run 12s linear infinite; }
+  @keyframes fle-run { 0% { transform: translateX(-220px); } 100% { transform: translateX(220px); } }
+  .fle-gallop { animation: fle-hop 0.5s ease-in-out infinite alternate; }
+  @keyframes fle-hop { to { transform: translateY(-6px) rotate(-2deg); } }
+  .fle-arrow { opacity: 0; animation: fle-shoot 5.4s linear infinite; }
+  @keyframes fle-shoot {
+    0% { opacity: 0; transform: translate(var(--x), 170px) rotate(25deg); }
+    3% { opacity: 1; }
+    12% { opacity: 1; transform: translate(calc(var(--x) + 120px), 330px) rotate(55deg); }
+    14%, 100% { opacity: 0; transform: translate(calc(var(--x) + 120px), 330px) rotate(55deg); }
+  }
+</style>

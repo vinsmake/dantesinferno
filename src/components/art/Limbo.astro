@@ -1,0 +1,49 @@
+---
+import { range } from '../../lib/rng';
+const walls = range(7).map((i) => {
+  const w = 760 - i * 82;
+  const yb = 470 - i * 26;
+  return { x: 600 - w / 2, w, y: yb - 46, i };
+});
+const poets = ['Omero', 'Orazio', 'Ovidio', 'Lucano'];
+---
+<svg viewBox="0 0 1200 600" aria-hidden="true">
+  <defs>
+    <radialGradient id="limbo-dome" cx="0.5" cy="1" r="1">
+      <stop offset="0" stop-color="#fff4d6" stop-opacity="0.55" />
+      <stop offset="0.5" stop-color="#d8c58e" stop-opacity="0.15" />
+      <stop offset="1" stop-color="#d8c58e" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="limbo-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a8068" />
+      <stop offset="1" stop-color="#2c2a22" />
+    </linearGradient>
+    <linearGradient id="limbo-meadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d3b28" />
+      <stop offset="1" stop-color="#0b100a" />
+    </linearGradient>
+  </defs>
+  <path d="M60 470 A540 400 0 0 1 1140 470Z" fill="url(#limbo-dome)" class="pulse" />
+  <ellipse cx="600" cy="520" rx="640" ry="120" fill="url(#limbo-meadow)" />
+  {walls.map((w) => (
+    <g>
+      <rect x={w.x} y={w.y} width={w.w} height="46" fill="url(#limbo-wall)" stroke="#1a1813" />
+      <line x1={w.x} y1={w.y - 5} x2={w.x + w.w} y2={w.y - 5} stroke="#7b725c" stroke-width="10" stroke-dasharray="12 9" />
+      {w.i === 0 && <path d="M570 470V440A30 30 0 0 1 630 440V470Z" fill="#100e0b" />}
+    </g>
+  ))}
+  <rect x="560" y="230" width="80" height="60" fill="url(#limbo-wall)" />
+  <line x1="560" y1="225" x2="640" y2="225" stroke="#7b725c" stroke-width="10" stroke-dasharray="10 8" />
+  <path d="M120 520 Q300 495 450 515 T780 510 T1100 525" fill="none" stroke="#a9d3e6" stroke-opacity="0.45" stroke-width="3" stroke-dasharray="20 14" class="limbo-stream" />
+  {poets.map((p, i) => (
+    <g class="bob" style={`animation-delay:${i * 0.5}s`}>
+      <use href="#soul" x={190 + i * 46} y={478 - i * 4} width="20" height="50" fill="#d9d1bd" fill-opacity="0.75" />
+      <text x={200 + i * 46} y={548 - i * 4} text-anchor="middle" font-family="Cinzel" font-size="10" fill="#c9bb94" opacity="0.7">{p}</text>
+    </g>
+  ))}
+  <line x1="196" y1="486" x2="196" y2="530" stroke="#d9d1bd" stroke-width="2" opacity="0.8" />
+</svg>
+<style>
+  .limbo-stream { animation: limbo-flow 4s linear infinite; }
+  @keyframes limbo-flow { to { stroke-dashoffset: -68; } }
+</style>

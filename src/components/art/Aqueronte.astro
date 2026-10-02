@@ -1,0 +1,72 @@
+---
+import { range } from '../../lib/rng';
+const waves = range(7).map((i) => ({ y: 560 + i * 42, o: 0.25 + i * 0.08, d: 8 + i * 2.5, a: 8 + i * 3 }));
+const wavePath = (y: number, a: number) => {
+  let d = `M0 ${y}`;
+  for (let x = 0; x <= 3200; x += 160) d += ` Q${x + 40} ${y - a} ${x + 80} ${y} T${x + 160} ${y}`;
+  return d + ` V900 H0Z`;
+};
+const shoreSouls = range(26).map((i) => ({ x: 1160 + (i % 13) * 34 + (i > 12 ? 17 : 0), y: 560 + (i > 12 ? 30 : 0) }));
+---
+<section class="pin charon" id="aqueronte" data-scene data-pin="charon" data-mode="leaves" data-bg="#07090c" data-glow="#1d1410" data-level="0" data-label="Aqueronte">
+  <div class="pin-title">
+    <p class="kicker">Canto III · La frontera</p>
+    <h2 class="title">El Aqueronte</h2>
+  </div>
+  <div class="pin-stage">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="ach-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#040507" />
+          <stop offset="1" stop-color="#1a1717" />
+        </linearGradient>
+        <linearGradient id="ach-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1b2228" />
+          <stop offset="1" stop-color="#05070a" />
+        </linearGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#ach-sky)" />
+      <!-- far shore -->
+      <ellipse class="ach-farglow" cx="260" cy="540" rx="420" ry="120" fill="url(#g-hot)" opacity="0.25" />
+      <path d="M0 470 L120 430 L260 460 L380 420 L520 480 L640 530 L0 560Z" fill="#0b0909" />
+      <!-- river -->
+      {waves.map((w) => (
+        <path d={wavePath(w.y, w.a)} fill="url(#ach-water)" fill-opacity={w.o} stroke="#4c5b66" stroke-opacity="0.25" class="ach-wave" style={`animation-duration:${w.d}s`} />
+      ))}
+      <!-- near shore with waiting souls -->
+      <path d="M1080 600 L1180 560 L1600 540 L1600 900 L1020 900Z" fill="#0d0b0a" />
+      {shoreSouls.map((s, i) => (
+        <use href="#soul-arms" x={s.x} y={s.y - 44} width="22" height="44" fill="#a69d92" fill-opacity="0.55" class="bob" style={`animation-delay:${i * 0.2}s`} />
+      ))}
+      <!-- the boat -->
+      <g class="ach-boat-track">
+        <g transform="translate(1060 640)">
+          <g class="ach-boat">
+            {range(8).map((i) => <use href="#soul" x={-160 + i * 34} y="-52" width="20" height="50" fill="#9aa3a8" fill-opacity="0.6" />)}
+            <line x1="140" y1="-110" x2="270" y2="130" stroke="#3a2a1e" stroke-width="6" stroke-linecap="round" />
+            <path d="M150 -172C134 -150 124 -80 116 -4H184C176 -80 168 -150 150 -172Z" fill="#070606" />
+            <path d="M128 -170Q150 -228 172 -170Q160 -150 150 -150Q140 -150 128 -170Z" fill="#090808" />
+            <path d="M142 -168Q150 -120 158 -168Z" fill="#cfc7b8" opacity="0.8" />
+            <g class="pulse" filter="url(#f-glow)">
+              <circle cx="143" cy="-178" r="4" fill="#ff7a1a" />
+              <circle cx="157" cy="-178" r="4" fill="#ff7a1a" />
+            </g>
+            <path d="M-200 -10L-176 22Q-150 38 -100 40H130Q182 36 210 -16L182 -4H-170Z" fill="#120c09" stroke="#3a2a1e" stroke-width="2" />
+          </g>
+        </g>
+      </g>
+      <rect class="ach-flash" width="1600" height="900" fill="#c41a00" opacity="0" />
+    </svg>
+  </div>
+  <div class="pin-caption">
+    <p class="it">Caron dimonio, con occhi di bragia,<br />loro accennando, tutte le raccoglie</p>
+    <p class="tr">Caronte, demonio de ojos de brasa, haciéndoles señas, a todas las recoge.</p>
+    <cite>Inferno III, 109–110</cite>
+  </div>
+</section>
+<style>
+  .ach-wave { animation: ach-flow linear infinite; }
+  @keyframes ach-flow { from { transform: translateX(0); } to { transform: translateX(-1600px); } }
+  .ach-boat { animation: ach-rock 3.5s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  @keyframes ach-rock { 0%,100% { transform: rotate(-1.5deg) translateY(0); } 50% { transform: rotate(1.5deg) translateY(6px); } }
+</style>

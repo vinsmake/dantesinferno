@@ -1,0 +1,92 @@
+---
+---
+<section class="salida" id="salida" data-scene data-mode="stars" data-bg="#030714" data-glow="#14264a" data-level="11" data-label="Las estrellas">
+  <div class="sal-copy">
+    <p class="kicker reveal">Canto XXXIV · 139</p>
+    <p class="sal-verse split">E quindi uscimmo a riveder le stelle.</p>
+    <p class="sal-tr reveal">Y salimos de allí a volver a ver las estrellas.</p>
+  </div>
+  <svg class="sal-svg" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="sal-dawn" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#030714" stop-opacity="0" />
+        <stop offset="0.7" stop-color="#2a3a6a" stop-opacity="0.6" />
+        <stop offset="1" stop-color="#e8a27a" stop-opacity="0.55" />
+      </linearGradient>
+      <linearGradient id="sal-sea" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a2848" />
+        <stop offset="1" stop-color="#03060f" />
+      </linearGradient>
+    </defs>
+    <rect width="1600" height="560" fill="url(#sal-dawn)" />
+    <!-- Venus, "lo bel pianeto che d'amar conforta" -->
+    <g transform="translate(1180 200)" class="pulse">
+      <circle r="40" fill="url(#g-cold)" />
+      <circle r="4" fill="#fff" />
+    </g>
+    <!-- Mount Purgatory across the sea -->
+    <path d="M480 560L620 470 650 476 700 420 730 426 770 360 800 330 830 362 870 424 900 420 950 476 980 470 1120 560Z" fill="#0a1024" />
+    <path d="M640 472H960M690 424H910M760 364H840" stroke="#3a4a7a" stroke-width="2" opacity="0.6" />
+    <rect y="560" width="1600" height="140" fill="url(#sal-sea)" />
+    <path d="M760 570H840M720 590H880M700 615H900M740 645H860" stroke="#e8a27a" stroke-opacity="0.35" stroke-width="2" class="sal-glint" />
+    <use href="#soul" x="380" y="520" width="16" height="40" fill="#0a0f1e" />
+    <use href="#soul" x="400" y="516" width="17" height="44" fill="#0a0f1e" />
+  </svg>
+  <footer class="sal-foot">
+    <p>Fin del <b>Inferno</b> · El viaje continúa en el <i>Purgatorio</i></p>
+    <a href="#selva" class="sal-top" data-top>↑ Volver a la selva oscura</a>
+    <p class="sal-cred">Versos de la <i>Commedia</i> de Dante Alighieri (dominio público). Traducciones libres.</p>
+  </footer>
+</section>
+<style>
+  .salida {
+    position: relative;
+    min-height: 190vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .sal-copy {
+    position: sticky;
+    top: 22vh;
+    text-align: center;
+    padding: 0 16px;
+    margin-bottom: auto;
+    z-index: 1;
+  }
+  .sal-verse {
+    font-family: var(--fell);
+    font-style: italic;
+    font-size: clamp(36px, 6.5vw, 104px);
+    line-height: 1.1;
+    margin: 0;
+    color: #f4f1ff;
+    text-shadow: 0 0 40px rgba(160, 200, 255, 0.5);
+  }
+  .sal-tr { color: #aab6d6; font-style: italic; }
+  .sal-svg { width: 100%; height: 70vh; }
+  .sal-glint { animation: pulse 2.5s ease-in-out infinite; }
+  .sal-foot {
+    position: relative;
+    background: #03060f;
+    text-align: center;
+    padding: 40px 16px 60px;
+    font-size: 0.9em;
+    color: #aab6d6;
+  }
+  .sal-foot b { font-family: var(--caps); color: var(--ember); letter-spacing: 0.1em; }
+  .sal-top {
+    display: inline-block;
+    margin: 12px 0 18px;
+    padding: 10px 26px;
+    border: 1px solid rgba(255, 106, 26, 0.6);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--caps);
+    letter-spacing: 0.2em;
+    font-size: 13px;
+    transition: background 0.3s, color 0.3s;
+  }
+  .sal-top:hover { background: var(--ember); color: #000; }
+  .sal-cred { font-size: 0.8em; opacity: 0.6; }
+</style>
