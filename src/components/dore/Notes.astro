@@ -1,0 +1,36 @@
+---
+/** Commentary that follows a pinned plate, set like the notes in an old edition. */
+interface Props {
+  id: string;
+  mode: string;
+  bg: string;
+  glow: string;
+  level: number;
+  label: string;
+  text?: string;
+  punishment?: string;
+  guardian?: string;
+  figures?: string[];
+}
+const p = Astro.props;
+---
+<section class="scene notes" id={p.id} data-scene data-mode={p.mode} data-bg={p.bg} data-glow={p.glow} data-level={p.level} data-label={p.label}>
+  <div class="notes-col info">
+    <span class="fleuron reveal" aria-hidden="true">❦</span>
+    {p.text && <p class="reveal dropcap">{p.text}</p>}
+    {p.punishment && (<div class="reveal"><h3>Castigo</h3><p class={p.text ? '' : 'dropcap'}>{p.punishment}</p></div>)}
+    {p.guardian && (<div class="reveal"><h3>Guardián</h3><p>{p.guardian}</p></div>)}
+    {p.figures && (<div class="reveal"><h3>Almas</h3><ul class="figures">{p.figures.map((f) => <li>{f}</li>)}</ul></div>)}
+    <slot />
+  </div>
+</section>
+<style>
+  .notes {
+    padding: 14vh 0 10vh;
+  }
+  .notes-col {
+    width: min(720px, 100%);
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+</style>

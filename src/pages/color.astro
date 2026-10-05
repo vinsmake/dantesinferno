@@ -1,0 +1,194 @@
+---
+import Base from '../layouts/Base.astro';
+import Defs from '../components/Defs.astro';
+import Hud from '../components/Hud.astro';
+import Canto from '../components/Canto.astro';
+import Selva from '../components/art/Selva.astro';
+import Puerta from '../components/art/Puerta.astro';
+import Ignavi from '../components/art/Ignavi.astro';
+import Aqueronte from '../components/art/Aqueronte.astro';
+import Limbo from '../components/art/Limbo.astro';
+import Lujuria from '../components/art/Lujuria.astro';
+import Gula from '../components/art/Gula.astro';
+import Avaricia from '../components/art/Avaricia.astro';
+import Estigia from '../components/art/Estigia.astro';
+import Dis from '../components/art/Dis.astro';
+import Flegetonte from '../components/art/Flegetonte.astro';
+import Suicidas from '../components/art/Suicidas.astro';
+import Sabbione from '../components/art/Sabbione.astro';
+import Gerion from '../components/art/Gerion.astro';
+import Malebolge from '../components/art/Malebolge.astro';
+import Gigantes from '../components/art/Gigantes.astro';
+import Cocito from '../components/art/Cocito.astro';
+import Lucifer from '../components/art/Lucifer.astro';
+import Centro from '../components/art/Centro.astro';
+import Salida from '../components/art/Salida.astro';
+---
+<Base title="Inferno · Un descenso por los nueve círculos" description="Desciende por el Infierno de Dante, de la selva oscura hasta Lucifer y de vuelta a las estrellas.">
+  <Defs />
+  <div id="atmo" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+  <div id="grain" aria-hidden="true"></div>
+  <Hud />
+
+  <main>
+    <Selva />
+    <Puerta />
+
+    <Canto
+      id="ignavi" mode="flies" bg="#0c0a08" glow="#221a10" level={0} label="Vestíbulo"
+      kicker="Vestíbulo · Canto III" title="Los Ignavos" sin="Los tibios, que nunca eligieron bando"
+      verse={["che visser sanza 'nfamia e sanza lodo"]} cite="Inferno III, 36"
+      translation="que vivieron sin infamia y sin alabanza"
+      punishment="Corren desnudos tras una bandera que gira sin sentido, picados por tábanos y avispas. Su sangre y sus lágrimas caen a sus pies, donde las sorben gusanos repugnantes. Ni el Cielo ni el Infierno los quieren."
+      figures={['Celestino V, «el de la gran renuncia»', 'Los ángeles neutrales']}
+    >
+      <Ignavi slot="art" />
+    </Canto>
+
+    <Aqueronte />
+
+    <Canto
+      id="limbo" mode="motes" bg="#0b0e0c" glow="#2a2a18" level={1} label="I · Limbo" num="I"
+      kicker="Círculo I · Canto IV" title="Limbo" sin="Los virtuosos sin bautismo"
+      verse={['sanza speme vivemo in disio']} cite="Inferno IV, 42" translation="sin esperanza vivimos en deseo"
+      punishment="No hay tormento, sólo suspiros que hacen temblar el aire eterno. Un noble castillo de siete murallas, rodeado por un arroyo, guarda bajo una cúpula de luz a los grandes espíritus de la Antigüedad."
+      guardian="Ninguno. Aquí vive el propio Virgilio."
+      figures={['Homero', 'Horacio', 'Ovidio', 'Lucano', 'Sócrates', 'Platón', 'Aristóteles', 'Saladino']}
+    >
+      <Limbo slot="art" />
+    </Canto>
+
+    <Canto
+      id="lujuria" mode="wind" bg="#100810" glow="#3a0f2a" level={2} label="II · Lujuria" num="II"
+      kicker="Círculo II · Canto V" title="Lujuria" sin="Los que sometieron la razón al deseo"
+      verse={["La bufera infernal, che mai non resta,", 'mena li spirti con la sua rapina']} cite="Inferno V, 31–32"
+      translation="La borrasca infernal, que nunca cesa, arrastra a los espíritus con su violencia"
+      punishment="Un torbellino eterno los arrastra como bandadas de estorninos en invierno, golpeándolos sin descanso: así como en vida se dejaron llevar por la pasión."
+      guardian="Minos, el juez. Escucha cada confesión y enrosca su cola tantas veces como círculos debe descender el alma."
+      figures={['Francesca da Rimini y Paolo', 'Cleopatra', 'Semíramis', 'Dido', 'Helena', 'Aquiles', 'Tristán']}
+    >
+      <Lujuria slot="art" />
+      <div class="reveal"><h3>«Amor, ch'a nullo amato amar perdona»</h3><p>Amor, que a ningún amado amar perdona. Al oír la historia de Francesca, Dante se desmaya de piedad.</p></div>
+    </Canto>
+
+    <Canto
+      id="gula" mode="rain" bg="#0a0d0d" glow="#1e2622" level={3} label="III · Gula" num="III"
+      kicker="Círculo III · Canto VI" title="Gula" sin="Los que vivieron para el placer de la mesa"
+      verse={['Io sono al terzo cerchio, de la piova', 'etterna, maladetta, fredda e greve']} cite="Inferno VI, 7–8"
+      translation="Estoy en el tercer círculo, el de la lluvia eterna, maldita, fría y pesada"
+      punishment="Yacen en un fango hediondo bajo una lluvia perpetua de granizo, agua sucia y nieve, aullando como perros."
+      guardian="Cerbero, la fiera de tres gargantas, de ojos bermejos y barba grasienta, que desuella a los condenados. Virgilio lo calma arrojándole tierra a las fauces."
+      figures={['Ciacco, el florentino']}
+    >
+      <Gula slot="art" />
+    </Canto>
+
+    <Canto
+      id="avaricia" mode="dust" bg="#100c06" glow="#3a2a0a" level={4} label="IV · Avaricia" num="IV"
+      kicker="Círculo IV · Canto VII" title="Avaricia y Prodigalidad" sin="Los que guardaron y los que derrocharon"
+      verse={['«Pape Satàn, pape Satàn aleppe!»', 'cominciò Pluto con la voce chioccia']} cite="Inferno VII, 1–2"
+      translation="«¡Pape Satàn, pape Satàn aleppe!», comenzó Pluto con voz ronca"
+      punishment="Dos ejércitos empujan enormes pesos con el pecho, en semicírculos opuestos. Al chocar se gritan «¿Por qué guardas?» y «¿Por qué derrochas?», dan media vuelta y empiezan otra vez."
+      guardian="Pluto, el dios de la riqueza, hinchado de rabia."
+      figures={['Papas y cardenales sin nombre: su vida sin discernimiento los volvió irreconocibles']}
+    >
+      <Avaricia slot="art" />
+    </Canto>
+
+    <Canto
+      id="ira" mode="bubbles" bg="#070c08" glow="#1a2a12" level={5} label="V · Ira" num="V"
+      kicker="Círculo V · Cantos VII–VIII" title="Ira y Pereza" sin="La laguna Estigia"
+      verse={['Fitti nel limo dicon: «Tristi fummo', "ne l'aere dolce che dal sol s'allegra»"]} cite="Inferno VII, 121–122"
+      translation="Hundidos en el limo dicen: «Tristes fuimos en el aire dulce que el sol alegra»"
+      punishment="Los iracundos se golpean, se muerden y se despedazan en el pantano. Bajo el agua, los perezosos borbotean su himno y hacen hervir la superficie."
+      guardian="Flegias, el barquero, que los cruza veloz hacia las murallas rojas de Dis."
+      figures={['Filippo Argenti']}
+    >
+      <Estigia slot="art" />
+    </Canto>
+
+    <Canto
+      id="herejia" mode="embers" bg="#160503" glow="#5a1404" level={6} label="VI · Herejía" num="VI"
+      kicker="Círculo VI · Cantos IX–XI" title="La Ciudad de Dis" sin="Herejes y epicúreos"
+      verse={["Ed el s'ergea col petto e con la fronte", "com' avesse l'inferno a gran dispitto"]} cite="Inferno X, 35–36"
+      translation="Y él se erguía con el pecho y con la frente, como si tuviese al infierno en gran desprecio"
+      punishment="Yacen en sepulcros abiertos que arden al rojo vivo. El día del Juicio, las losas se cerrarán sobre ellos para siempre."
+      guardian="Ángeles caídos cierran las puertas; desde las torres llaman a Medusa las tres Furias. Sólo un mensajero del Cielo abre la ciudad con una varita."
+      figures={['Farinata degli Uberti', 'Cavalcante', 'Federico II', 'Epicuro']}
+    >
+      <Dis slot="art" />
+    </Canto>
+
+    <Canto
+      id="violencia" mode="blood" bg="#140302" glow="#5a0606" level={7} label="VII · Violencia" num="VII"
+      kicker="Círculo VII · Anillo I · Canto XII" title="Violencia" sin="Contra el prójimo: tiranos, asesinos y saqueadores"
+      verse={['Ma ficca li occhi a valle, ché s\'approccia', 'la riviera del sangue']} cite="Inferno XII, 46–47"
+      translation="Pero fija los ojos abajo, que se acerca el río de sangre"
+      punishment="Hervidos en el Flegetonte, un río de sangre hirviente. Cuanto más grave el crimen, más hondo se hunden. Si alguno emerge más de lo debido, los centauros lo atraviesan con flechas."
+      guardian="El Minotauro, «l'infamia di Creti», y los centauros Quirón, Neso y Folo."
+      figures={['Alejandro', 'Atila, «flagelo de la tierra»', 'Ezzelino da Romano', 'Pirro']}
+    >
+      <Flegetonte slot="art" />
+    </Canto>
+
+    <Canto
+      id="suicidas" mode="leaves" bg="#0c0908" glow="#2a1a12" level={7} label="VII · Violencia"
+      kicker="Círculo VII · Anillo II · Canto XIII" title="El Bosque de los Suicidas" sin="Contra sí mismos"
+      verse={['«Perché mi schiante?', 'non hai tu spirto di pietade alcuno?»']} cite="Inferno XIII, 33–36"
+      translation="¿Por qué me quiebras? ¿No tienes espíritu de piedad alguno?"
+      punishment="Quienes rechazaron su cuerpo se vuelven árboles nudosos y espinosos. Las Harpías devoran sus hojas, y sólo al romperse una rama pueden hablar, sangrando. Los derrochadores huyen entre ellos, despedazados por perras negras."
+      guardian="Las Harpías, aves con rostro humano."
+      figures={['Pier delle Vigne', 'Lano da Siena', 'Giacomo da Sant\'Andrea']}
+    >
+      <Suicidas slot="art" />
+    </Canto>
+
+    <Canto
+      id="sabbione" mode="firerain" bg="#1a0703" glow="#7a2a06" level={7} label="VII · Violencia"
+      kicker="Círculo VII · Anillo III · Cantos XIV–XVII" title="El Arenal Ardiente" sin="Contra Dios, la naturaleza y el arte"
+      verse={["Sovra tutto 'l sabbion, d'un cader lento,", 'piovean di foco dilatate falde']} cite="Inferno XIV, 28–29"
+      translation="Sobre todo el arenal, con un caer lento, llovían de fuego anchos copos"
+      punishment="Un desierto de arena abrasadora bajo una lluvia eterna de fuego, como nieve en los Alpes sin viento. Los blasfemos yacen boca arriba, los sodomitas corren sin parar y los usureros se acurrucan con bolsas de escudos al cuello."
+      figures={['Capaneo, que aún desafía a Júpiter', 'Brunetto Latini, maestro de Dante']}
+    >
+      <Sabbione slot="art" />
+    </Canto>
+
+    <Gerion />
+
+    <Canto
+      id="malebolge" mode="embers" bg="#110605" glow="#3a1006" level={8} label="VIII · Fraude" num="VIII"
+      kicker="Círculo VIII · Cantos XVIII–XXX" title="Malebolge" sin="Fraude: diez fosos de piedra, puentes y castigos"
+      verse={["Luogo è in inferno detto Malebolge,", 'tutto di pietra di color ferrigno']} cite="Inferno XVIII, 1–2"
+      translation="Hay un lugar en el infierno llamado Malebolge, todo de piedra de color ferroso"
+      punishment="Diez fosas concéntricas, como fosos alrededor de un castillo, cruzadas por puentes de roca que descienden hacia el pozo central. Cada una alberga un tipo de engaño."
+      guardian="Los Malebranche, demonios de garfios afilados, y Gerión, que trajo a los poetas hasta aquí."
+    >
+      <Malebolge slot="art" />
+    </Canto>
+
+    <Gigantes />
+
+    <Canto
+      id="cocito" mode="snow" bg="#050c14" glow="#163050" level={9} label="IX · Traición" num="IX"
+      kicker="Círculo IX · Cantos XXXII–XXXIII" title="Cocito" sin="La traición: el lago helado"
+      verse={["e vidimi davante", "e sotto i piedi un lago che per gelo", "avea di vetro e non d'acqua sembiante"]} cite="Inferno XXXII, 22–24"
+      translation="y vi delante y bajo mis pies un lago que, por el hielo, parecía de vidrio y no de agua"
+      punishment="No fuego, sino hielo: el pecado más frío. Caína, para traidores a la familia; Antenora, a la patria; Tolomea, a los huéspedes, con las lágrimas congeladas en los ojos; y Giudecca, a los señores, sepultados por completo, como paja en vidrio."
+      figures={['Conde Ugolino royendo al arzobispo Ruggieri', 'Fray Alberigo', 'Mordred']}
+    >
+      <Cocito slot="art" />
+      <div class="reveal"><h3>«Poscia, più che 'l dolor, poté 'l digiuno»</h3><p>Después, más que el dolor, pudo el hambre. Ugolino, encerrado en la torre con sus hijos.</p></div>
+    </Canto>
+
+    <Lucifer />
+    <Centro />
+    <Salida />
+  </main>
+
+  <script>
+    import '../scripts/main';
+  </script>
+</Base>

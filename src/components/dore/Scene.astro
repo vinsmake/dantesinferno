@@ -1,0 +1,94 @@
+---
+import Plate from './Plate.astro';
+
+type PlateSpec = { img: string; alt: string; caption?: string; cite?: string; fx?: string[]; anim?: 'breathe' | 'flicker'; pos?: string };
+interface Props {
+  id: string;
+  mode: string;
+  bg: string;
+  glow: string;
+  level: number;
+  label: string;
+  num?: string;
+  kicker: string;
+  title: string;
+  sin?: string;
+  verse?: string[];
+  cite?: string;
+  translation?: string;
+  text?: string;
+  guardian?: string;
+  punishment?: string;
+  figures?: string[];
+  plate: PlateSpec;
+  layout?: 'left' | 'right' | 'wide';
+  insets?: (PlateSpec & { tall?: boolean })[];
+}
+const p = Astro.props;
+const layout = p.layout ?? 'left';
+---
+<section class="scene" id={p.id} data-scene data-mode={p.mode} data-bg={p.bg} data-glow={p.glow} data-level={p.level} data-label={p.label}>
+  {p.num && <div class="scene-num" aria-hidden="true">{p.num}</div>}
+  <header class="scene-head">
+    <p class="kicker reveal">{p.kicker}</p>
+    <h2 class="title reveal">{p.title}</h2>
+    {p.sin && <p class="sin reveal">{p.sin}</p>}
+  </header>
+
+  {
+    layout === 'wide' ? (
+      <>
+        <div class="wide">
+          <Plate {...p.plate} />
+        </div>
+        <div class="wide-text">
+          <div>
+            {p.verse && (
+              <blockquote class="verse reveal">
+                <p class="it split">
+                  {p.verse.map((l, i) => (<>{l}{i < p.verse!.length - 1 && <br />}</>))}
+                </p>
+                <cite>{p.cite}</cite>
+                {p.translation && <p class="tr">«{p.translation}»</p>}
+              </blockquote>
+            )}
+            {p.insets?.map((ins) => <Plate {...ins} class:list={['inset', 'reveal', ins.tall && 'tall']} />)}
+          </div>
+          <div class="info">
+            {p.text && <p class="reveal dropcap">{p.text}</p>}
+            {p.punishment && (<div class="reveal"><h3>Castigo</h3><p class={p.text ? '' : 'dropcap'}>{p.punishment}</p></div>)}
+            {p.guardian && (<div class="reveal"><h3>Guardián</h3><p>{p.guardian}</p></div>)}
+            {p.figures && (<div class="reveal"><h3>Almas</h3><ul class="figures">{p.figures.map((f) => <li>{f}</li>)}</ul></div>)}
+            <slot />
+          </div>
+        </div>
+      </>
+    ) : (
+      <div class:list={['spread', layout === 'right' && 'flip']}>
+        <div class="spread-plate">
+          <Plate {...p.plate} />
+        </div>
+        <div class="spread-text">
+          {p.verse && (
+            <blockquote class="verse reveal">
+              <p class="it split">
+                {p.verse.map((l, i) => (<>{l}{i < p.verse!.length - 1 && <br />}</>))}
+              </p>
+              <cite>{p.cite}</cite>
+              {p.translation && <p class="tr">«{p.translation}»</p>}
+            </blockquote>
+          )}
+          <span class="fleuron reveal" aria-hidden="true">❦</span>
+          <div class="info">
+            {p.text && <p class="reveal dropcap">{p.text}</p>}
+            {p.punishment && (<div class="reveal"><h3>Castigo</h3><p class={p.text ? '' : 'dropcap'}>{p.punishment}</p></div>)}
+            {p.guardian && (<div class="reveal"><h3>Guardián</h3><p>{p.guardian}</p></div>)}
+            {p.insets?.map((ins) => <Plate {...ins} class:list={['inset', 'reveal', ins.tall && 'tall']} />)}
+            {p.figures && (<div class="reveal"><h3>Almas</h3><ul class="figures">{p.figures.map((f) => <li>{f}</li>)}</ul></div>)}
+            <slot />
+          </div>
+        </div>
+      </div>
+    )
+  }
+</section>

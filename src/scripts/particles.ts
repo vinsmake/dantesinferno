@@ -33,6 +33,13 @@ const MODES: Record<string, Mode> = {
   stars: { rate: 160, max: 420, mix: [['star', 0.995], ['shoot', 0.005]] },
 };
 
+export type Palette = Record<'ember' | 'fire' | 'mote' | 'dust' | 'blood' | 'star' | 'cold' | 'wind' | 'icewind' | 'rain' | 'bubble' | 'fly' | 'leafFill' | 'leafStroke' | 'ash', string>;
+
+export const COLOR_PALETTE: Palette = {
+  ember: '#ff7a2a', fire: '#ffb347', mote: '#efe6b8', dust: '#d4ae5a', blood: '#ff2a10', star: '#dfe8ff', cold: '#cfe8ff',
+  wind: '#f2c4dc', icewind: '#dff1ff', rain: '#b9cad4', bubble: '#a9c47e', fly: '#d9c27a', leafFill: '#3a2418', leafStroke: '#7a4a2a', ash: '#9a928a',
+};
+
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
 function sprite(color: string, size = 64) {
@@ -62,16 +69,16 @@ export class Particles {
   scrollVel = 0;
   density = 1;
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(private canvas: HTMLCanvasElement, private pal: Palette = COLOR_PALETTE) {
     this.ctx = canvas.getContext('2d')!;
     this.sprites = {
-      ember: sprite('#ff7a2a'),
-      fire: sprite('#ffb347'),
-      mote: sprite('#efe6b8'),
-      dust: sprite('#d4ae5a'),
-      blood: sprite('#ff2a10'),
-      star: sprite('#dfe8ff'),
-      cold: sprite('#cfe8ff'),
+      ember: sprite(pal.ember),
+      fire: sprite(pal.fire),
+      mote: sprite(pal.mote),
+      dust: sprite(pal.dust),
+      blood: sprite(pal.blood),
+      star: sprite(pal.star),
+      cold: sprite(pal.cold),
     };
     this.resize();
     addEventListener('resize', () => this.resize());
@@ -250,7 +257,7 @@ export class Particles {
         ctx.globalCompositeOperation = 'source-over';
         const k = p.k === 'rain' ? 0.025 : 0.06;
         ctx.globalAlpha = a * (p.k === 'rain' ? 0.35 : p.k === 'wind' ? 0.35 : 0.5);
-        ctx.strokeStyle = p.k === 'wind' ? '#f2c4dc' : p.k === 'icewind' ? '#dff1ff' : '#b9cad4';
+        ctx.strokeStyle = p.k === 'wind' ? this.pal.wind : p.k === 'icewind' ? this.pal.icewind : this.pal.rain;
         ctx.lineWidth = p.s;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
@@ -271,7 +278,7 @@ export class Particles {
       case 'bubble': {
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = a * 0.55;
-        ctx.strokeStyle = '#a9c47e';
+        ctx.strokeStyle = this.pal.bubble;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.s, 0, 6.283);
@@ -281,7 +288,7 @@ export class Particles {
       case 'fly': {
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = a * 0.85;
-        ctx.fillStyle = '#d9c27a';
+        ctx.fillStyle = this.pal.fly;
         ctx.fillRect(p.x, p.y, p.s, p.s);
         ctx.globalAlpha = a * 0.25;
         ctx.fillRect(p.x - 2, p.y - 1 + Math.sin(t * 60 + p.seed) * 1.5, p.s + 4, 1);
@@ -295,14 +302,14 @@ export class Particles {
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rot);
         if (p.k === 'leaf') {
-          ctx.fillStyle = '#3a2418';
-          ctx.strokeStyle = '#7a4a2a';
+          ctx.fillStyle = this.pal.leafFill;
+          ctx.strokeStyle = this.pal.leafStroke;
           ctx.beginPath();
           ctx.ellipse(0, 0, p.s, p.s * 0.45, 0, 0, 6.283);
           ctx.fill();
           ctx.stroke();
         } else {
-          ctx.fillStyle = '#9a928a';
+          ctx.fillStyle = this.pal.ash;
           ctx.fillRect(-p.s, -p.s * 0.4, p.s * 2, p.s * 0.8);
         }
         ctx.restore();

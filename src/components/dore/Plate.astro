@@ -1,0 +1,37 @@
+---
+/** A framed engraving, like a full-page plate in the 1861 Hachette edition. */
+interface Props {
+  img: string;
+  alt: string;
+  caption?: string;
+  cite?: string;
+  fx?: string[];
+  anim?: 'breathe' | 'flicker';
+  class?: string;
+  kb?: boolean;
+  pos?: string;
+  eager?: boolean;
+}
+const { img, alt, caption, cite, fx = [], anim = 'breathe', kb = true, pos = '50% 50%', eager = false } = Astro.props;
+---
+<figure class:list={['plate', Astro.props.class]} data-plate>
+  <div class="plate-frame" data-reveal>
+    <img
+      class:list={['plate-img', `fx-${anim}`]}
+      src={`/dore/${img}.webp`}
+      alt={alt}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      style={`object-position:${pos}`}
+      data-kb={kb ? '' : undefined}
+    />
+    {fx.map((f) => <div class={`fx fx-${f}`} aria-hidden="true" />)}
+  </div>
+  {
+    caption && (
+      <figcaption>
+        «{caption}»{cite && <cite>{cite}</cite>}
+      </figcaption>
+    )
+  }
+</figure>

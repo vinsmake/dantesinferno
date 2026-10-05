@@ -1,0 +1,64 @@
+---
+/**
+ * A pinned, full-screen engraving explored by a scroll-driven camera.
+ * Each step is a camera position (focal point x/y in 0..1 of the image,
+ * zoom s relative to "cover", optional rotation r) plus an optional caption.
+ */
+export type Step = { img: string; x: number; y: number; s: number; r?: number; it?: string; tr?: string; cite?: string };
+interface Props {
+  id: string;
+  mode: string;
+  bg: string;
+  glow: string;
+  level: number;
+  label: string;
+  len?: string;
+  kicker?: string;
+  title?: string;
+  sin?: string;
+  steps: Step[];
+  fx?: string[];
+  anim?: 'breathe' | 'flicker';
+}
+const p = Astro.props;
+const imgs = [...new Set(p.steps.map((s) => s.img))];
+---
+<section
+  class="pin"
+  id={p.id}
+  data-scene
+  data-pinplate
+  data-len={p.len ?? `${p.steps.length * 90}%`}
+  data-steps={JSON.stringify(p.steps.map(({ img, x, y, s, r }) => ({ img, x, y, s, r: r ?? 0 })))}
+  data-mode={p.mode}
+  data-bg={p.bg}
+  data-glow={p.glow}
+  data-level={p.level}
+  data-label={p.label}
+>
+  <div class="cam">
+    {imgs.map((k, i) => (
+      <img class:list={['cam-layer', `fx-${p.anim ?? 'breathe'}`]} data-layer={k} src={`/dore/${k}.webp`} alt="" loading={i === 0 && p.id === 'selva' ? 'eager' : 'lazy'} decoding="async" style={i ? 'opacity:0' : ''} />
+    ))}
+    {(p.fx ?? []).map((f) => <div class={`fx fx-${f}`} aria-hidden="true" />)}
+  </div>
+  {
+    p.title && (
+      <div class="pin-title" data-pin-title>
+        {p.kicker && <p class="kicker">{p.kicker}</p>}
+        <h2 class="title">{p.title}</h2>
+        {p.sin && <p class="sin">{p.sin}</p>}
+      </div>
+    )
+  }
+  <slot />
+  {p.steps.map((s, i) =>
+    s.it ? (
+      <div class="pin-cap" data-cap={i}>
+        <p class="it" set:html={s.it} />
+        {s.tr && <p class="tr">{s.tr}</p>}
+        {s.cite && <cite>{s.cite}</cite>}
+      </div>
+    ) : null,
+  )}
+</section>

@@ -1,0 +1,871 @@
+/* ------------------------------------------------------------------
+   Inferno · Gustave Doré edition
+   Ink, paper and light: a monochrome engraving world.
+   ------------------------------------------------------------------ */
+:root {
+  --ink: #0a0908;
+  --paper: #ece3cf;
+  --paper-dim: #b8ab90;
+  --sepia: #c2a878;
+  --rule: rgba(236, 227, 207, 0.28);
+  --bgc: #0a0908;
+  --glow: #1d1912;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --fell: 'IM Fell English', Georgia, serif;
+  --caps: 'Cinzel', 'Trajan Pro', serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+  color-scheme: dark;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--serif);
+  font-size: clamp(18px, 1.1vw + 10px, 22px);
+  line-height: 1.62;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: var(--paper);
+  color: var(--ink);
+}
+h1,
+h2,
+h3 {
+  font-family: var(--caps);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+img {
+  display: block;
+}
+
+/* ---------- atmosphere ---------- */
+#atmo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(110% 70% at 50% 0%, var(--glow), transparent 70%),
+    var(--bgc);
+}
+#fx {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 6;
+  pointer-events: none;
+}
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+}
+/* paper grain + faint engraved hatching over everything */
+#grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.7s steps(4) infinite;
+}
+#hatch {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.05;
+  background: repeating-linear-gradient(118deg, #fff 0 1px, transparent 1px 4px);
+  mix-blend-mode: overlay;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-1%, 3%); }
+  100% { transform: translate(3%, -1%); }
+}
+main {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  font-family: var(--caps);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.hud-progress {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.hud-progress i {
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: var(--paper);
+  box-shadow: 0 0 10px rgba(255, 245, 220, 0.6);
+}
+.hud-brand {
+  top: 18px;
+  left: 24px;
+  font-size: 11px;
+  color: var(--paper-dim);
+}
+.hud-brand b {
+  color: var(--paper);
+  font-weight: 800;
+}
+.hud-depth {
+  left: 24px;
+  bottom: 22px;
+  font-size: 10px;
+  color: var(--paper-dim);
+  line-height: 1.5;
+}
+.hud-depth b {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--paper);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+.hud-depth em {
+  display: block;
+  font-style: normal;
+  opacity: 0.7;
+}
+.hud-map {
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 140px;
+}
+.hud-map svg {
+  width: 100%;
+  overflow: visible;
+}
+.hud-map .band {
+  fill: rgba(0, 0, 0, 0.35);
+  stroke: var(--rule);
+  stroke-width: 0.6;
+  transition: fill 0.4s;
+}
+.hud-map .band.past {
+  fill: rgba(236, 227, 207, 0.08);
+}
+.hud-map .band.on {
+  fill: rgba(236, 227, 207, 0.85);
+  stroke: var(--paper);
+}
+.hud-map text {
+  font-family: var(--caps);
+  font-size: 6.5px;
+  fill: var(--paper-dim);
+  letter-spacing: 0.1em;
+}
+.hud-map text.on {
+  fill: var(--ink);
+  font-weight: 800;
+}
+@media (max-width: 900px) {
+  .hud-map { display: none; }
+  .hud-depth { left: 14px; bottom: 14px; }
+  .hud-depth b { font-size: 17px; }
+  .hud-brand { left: 14px; }
+}
+
+/* ---------- typography blocks ---------- */
+.kicker {
+  font-family: var(--caps);
+  font-size: 12px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--sepia);
+  margin: 0 0 10px;
+}
+.title {
+  font-size: clamp(40px, 6vw, 92px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--paper);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
+}
+.sin {
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: clamp(20px, 1.9vw, 27px);
+  color: var(--paper-dim);
+  margin: 12px 0 0;
+}
+.fleuron {
+  display: block;
+  text-align: center;
+  color: var(--sepia);
+  font-size: 22px;
+  letter-spacing: 0.6em;
+  margin: 18px 0;
+  opacity: 0.8;
+}
+.verse {
+  margin: 0 0 26px;
+  padding: 0;
+}
+.verse .it {
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.32;
+  color: #fbf5e6;
+  margin: 0;
+}
+.verse cite {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--caps);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--sepia);
+}
+.verse .tr {
+  margin: 10px 0 0;
+  color: var(--paper-dim);
+  font-style: italic;
+}
+.info h3 {
+  font-size: 11px;
+  letter-spacing: 0.38em;
+  color: var(--sepia);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+.info p {
+  margin: 0 0 22px;
+}
+.info .dropcap::first-letter {
+  float: left;
+  font-family: var(--caps);
+  font-weight: 800;
+  font-size: 3.6em;
+  line-height: 0.82;
+  padding: 6px 10px 0 0;
+  color: var(--paper);
+}
+.figures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-family: var(--fell);
+  font-style: italic;
+}
+.figures li::before {
+  content: '— ';
+  color: var(--sepia);
+}
+.word {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ---------- engraved plate ---------- */
+.plate {
+  position: relative;
+  margin: 0;
+}
+.plate-frame {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  outline: 1px solid var(--rule);
+  outline-offset: 8px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+}
+.plate-frame::after {
+  /* inner ink edge so the engraving seems to bleed into the dark */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 80px 20px rgba(0, 0, 0, 0.75);
+  z-index: 3;
+}
+.plate-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  filter: contrast(1.08);
+}
+.plate figcaption {
+  margin-top: 18px;
+  text-align: center;
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: 0.95em;
+  color: var(--paper-dim);
+}
+.plate figcaption cite {
+  display: block;
+  font-family: var(--caps);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  margin-top: 4px;
+  color: var(--sepia);
+}
+
+/* overlays that bring the engraving to life */
+.fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.fx-rays {
+  inset: -40%;
+  background: repeating-conic-gradient(from 0deg at 30% 0%, rgba(255, 248, 228, 0.16) 0deg 3deg, transparent 3deg 9deg);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(ellipse at 30% 10%, #000 0%, transparent 60%);
+  -webkit-mask-image: radial-gradient(ellipse at 30% 10%, #000 0%, transparent 60%);
+  animation: rays 22s ease-in-out infinite alternate;
+}
+@keyframes rays {
+  from { transform: rotate(-4deg); opacity: 0.6; }
+  to { transform: rotate(5deg); opacity: 1; }
+}
+.fx-fog {
+  inset: -20%;
+  background:
+    radial-gradient(40% 18% at 30% 70%, rgba(236, 227, 207, 0.22), transparent 70%),
+    radial-gradient(45% 20% at 75% 80%, rgba(236, 227, 207, 0.18), transparent 70%);
+  mix-blend-mode: screen;
+  filter: blur(10px);
+  animation: fog 16s ease-in-out infinite alternate;
+}
+@keyframes fog {
+  from { transform: translateX(-6%); }
+  to { transform: translateX(6%); }
+}
+.fx-fire {
+  background: radial-gradient(70% 50% at 50% 100%, rgba(255, 240, 210, 0.35), transparent 70%);
+  mix-blend-mode: screen;
+  animation: fire 0.18s steps(2) infinite alternate, fire-slow 2.3s ease-in-out infinite alternate;
+}
+@keyframes fire {
+  from { opacity: 0.55; }
+  to { opacity: 0.85; }
+}
+@keyframes fire-slow {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.fx-storm {
+  background: rgba(255, 255, 255, 0.85);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  animation: storm 7s infinite;
+}
+@keyframes storm {
+  0%, 88%, 92%, 100% { opacity: 0; }
+  89%, 91% { opacity: 0.7; }
+}
+.fx-cold {
+  background: radial-gradient(80% 60% at 50% 40%, rgba(220, 235, 255, 0.18), transparent 70%);
+  mix-blend-mode: screen;
+  animation: pulse 5s ease-in-out infinite;
+}
+.fx-breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { filter: contrast(1.08) brightness(0.88); }
+  50% { filter: contrast(1.12) brightness(0.98); }
+}
+.fx-flicker {
+  animation: flicker 3s infinite;
+}
+@keyframes flicker {
+  0%, 100% { filter: contrast(1.1) brightness(1); }
+  10% { filter: contrast(1.15) brightness(1.1); }
+  12% { filter: contrast(1.1) brightness(0.9); }
+  40% { filter: contrast(1.12) brightness(1.04); }
+  42% { filter: contrast(1.1) brightness(0.94); }
+  70% { filter: contrast(1.14) brightness(1.08); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ---------- scenes (book spreads) ---------- */
+.scene {
+  position: relative;
+  padding: 16vh 0 14vh;
+}
+.scene-num {
+  position: absolute;
+  top: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--caps);
+  font-weight: 900;
+  font-size: clamp(140px, 28vw, 440px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(236, 227, 207, 0.08);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+.scene-head {
+  position: relative;
+  text-align: center;
+  padding: 0 20px;
+  margin-bottom: 8vh;
+}
+.spread {
+  position: relative;
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 72px;
+  align-items: start;
+}
+.spread.flip {
+  grid-template-columns: 1fr 1.05fr;
+}
+.spread.flip .spread-plate {
+  order: 2;
+}
+.spread-plate {
+  position: sticky;
+  top: 8vh;
+}
+.spread-plate .plate-frame {
+  height: 80vh;
+  max-height: 900px;
+}
+.spread-text {
+  padding-top: 6vh;
+  min-height: 110vh;
+}
+.wide {
+  position: relative;
+  width: min(1400px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.wide .plate-frame {
+  height: min(78vh, 62vw);
+}
+.wide-text {
+  width: min(1060px, 100%);
+  margin: 9vh auto 0;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px 64px;
+}
+.inset {
+  margin: 34px 0 30px;
+}
+.inset .plate-frame {
+  aspect-ratio: 4 / 3;
+}
+.inset.tall .plate-frame {
+  aspect-ratio: 3 / 4;
+}
+@media (max-width: 860px) {
+  .spread,
+  .spread.flip,
+  .wide-text {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .spread.flip .spread-plate {
+    order: 0;
+  }
+  .spread-plate {
+    position: relative;
+    top: 0;
+  }
+  .spread-plate .plate-frame {
+    height: 70vh;
+  }
+  .spread-text {
+    min-height: 0;
+    padding-top: 0;
+  }
+}
+
+/* ---------- pinned cinematic plates ---------- */
+.pin {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+.cam {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.cam-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+  max-width: none;
+}
+.pin::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 2;
+}
+.pin-title {
+  position: absolute;
+  top: 11vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 4;
+  padding: 0 16px;
+}
+.pin-cap {
+  position: absolute;
+  left: 50%;
+  bottom: 8vh;
+  transform: translateX(-50%);
+  width: min(820px, calc(100% - 32px));
+  text-align: center;
+  z-index: 4;
+  opacity: 0;
+  padding: 26px 28px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7), transparent 72%);
+}
+.pin-cap .it {
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: clamp(22px, 2.5vw, 36px);
+  line-height: 1.3;
+  margin: 0;
+  color: #fbf5e6;
+  text-shadow: 0 2px 18px #000, 0 0 3px #000;
+}
+.pin-cap .tr {
+  color: var(--paper-dim);
+  font-style: italic;
+  margin: 8px 0 0;
+  text-shadow: 0 2px 10px #000;
+}
+.pin-cap cite {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--caps);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--sepia);
+}
+
+/* ---------- hero title ---------- */
+.hero-title {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 45% at 50% 50%, rgba(0, 0, 0, 0.72), transparent 75%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 16px;
+}
+.hero-title .pre {
+  font-family: var(--caps);
+  letter-spacing: 0.5em;
+  font-size: 12px;
+  color: var(--paper-dim);
+  margin: 0 0 14px;
+}
+.hero-title h1 {
+  font-size: clamp(40px, 13vw, 230px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  line-height: 0.9;
+  color: var(--paper);
+  text-shadow: 0 4px 40px #000, 0 0 2px #000;
+}
+.hero-title h1 span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(14px);
+  animation: rise 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: calc(var(--i) * 0.13s + 0.3s);
+}
+@keyframes rise {
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.hero-title .by,
+.hero-title .pre {
+  text-shadow: 0 0 12px #000, 0 0 3px #000;
+}
+.hero-title .by {
+  font-family: var(--caps);
+  font-size: clamp(12px, 1.2vw, 16px);
+  letter-spacing: 0.4em;
+  margin: 22px 0 0;
+  color: var(--paper);
+  opacity: 0;
+  animation: fadein 1.6s 1.6s forwards;
+}
+.hero-title .by i {
+  display: block;
+  font-family: var(--fell);
+  letter-spacing: 0.05em;
+  text-transform: none;
+  font-size: 1.3em;
+  color: var(--paper-dim);
+  margin-top: 6px;
+}
+.scroll-cue {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--caps);
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--paper-dim);
+  opacity: 0;
+  animation: fadein 1s 2.8s forwards;
+}
+.scroll-cue i {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(var(--paper), transparent);
+  animation: cue 2s ease-in-out infinite;
+  transform-origin: top;
+}
+@keyframes cue {
+  0% { transform: scaleY(0); opacity: 1; }
+  70% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Malebolge ---------- */
+.bolge {
+  list-style: none;
+  margin: 8vh auto 0;
+  padding: 0 24px;
+  width: min(1240px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 40px 28px;
+  counter-reset: b;
+}
+.bolgia .plate-frame {
+  aspect-ratio: 4 / 5;
+  outline-offset: 5px;
+}
+.bolgia .plate-img {
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.bolgia:hover .plate-img {
+  transform: scale(1.12);
+}
+.bolgia .ornament {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-family: var(--caps);
+  font-size: 90px;
+  color: rgba(236, 227, 207, 0.18);
+  background: repeating-linear-gradient(135deg, rgba(236, 227, 207, 0.05) 0 1px, transparent 1px 6px), #0d0c0a;
+}
+.bolgia h3 {
+  font-size: 17px;
+  margin: 2px 0 4px;
+}
+.bolgia .n {
+  font-family: var(--caps);
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: var(--sepia);
+  margin: 0;
+}
+.bolgia p {
+  margin: 0;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.bolgia .who {
+  margin-top: 6px;
+  font-family: var(--fell);
+  font-style: italic;
+  color: var(--paper-dim);
+}
+
+/* ---------- finale ---------- */
+.finale {
+  position: relative;
+  height: 240vh;
+}
+.finale-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.finale .plate {
+  width: min(360px, 60vw);
+}
+.finale .plate-frame {
+  aspect-ratio: 488 / 674;
+}
+.finale-verse {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  padding: 0 16px;
+  z-index: 3;
+  pointer-events: none;
+}
+.finale-verse .big {
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: clamp(36px, 6.5vw, 104px);
+  line-height: 1.08;
+  margin: 0;
+  color: #fffaf0;
+  text-shadow: 0 0 40px rgba(0, 0, 0, 0.95), 0 0 4px #000;
+}
+.finale-verse .tr {
+  color: var(--paper-dim);
+  font-style: italic;
+  text-shadow: 0 0 12px #000;
+}
+.colophon {
+  position: relative;
+  z-index: 3;
+  margin: 0 auto;
+  text-align: center;
+  padding: 50px 16px 70px;
+  font-size: 0.9em;
+  color: var(--paper-dim);
+  border-top: 1px solid var(--rule);
+  width: min(900px, 100%);
+}
+.colophon b {
+  font-family: var(--caps);
+  color: var(--paper);
+  letter-spacing: 0.1em;
+}
+.colophon a {
+  color: var(--paper);
+}
+.btn {
+  display: inline-block;
+  margin: 14px 8px 20px;
+  padding: 10px 26px;
+  border: 1px solid var(--paper-dim);
+  color: var(--paper);
+  text-decoration: none;
+  font-family: var(--caps);
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  transition: background 0.3s, color 0.3s;
+}
+.btn:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+.credits {
+  font-size: 0.78em;
+  opacity: 0.7;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.idle *,
+.idle *::before,
+.idle *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* plates surface from the dark: --r is driven by scroll */
+.plate-frame {
+  --r: 160%;
+}
+.plate-frame > .plate-img,
+.plate-frame > .fx {
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 var(--r), transparent calc(var(--r) + 35%));
+  mask-image: radial-gradient(circle at 50% 45%, #000 var(--r), transparent calc(var(--r) + 35%));
+}

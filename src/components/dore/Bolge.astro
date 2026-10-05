@@ -1,0 +1,30 @@
+---
+import Plate from './Plate.astro';
+const bolge = [
+  { n: 'I', t: 'Rufianes y seductores', p: 'Marchan en dos filas opuestas, azotados por demonios cornudos.', s: 'Jasón', img: 'b1' },
+  { n: 'II', t: 'Aduladores', p: 'Hundidos en excremento humano, como sus palabras en vida.', s: 'Thaís', img: 'b2' },
+  { n: 'III', t: 'Simoníacos', p: 'Cabeza abajo en agujeros de piedra; las plantas de los pies, en llamas.', s: 'Nicolás III', img: 'b3' },
+  { n: 'IV', t: 'Adivinos', p: 'Con la cabeza torcida hacia atrás, caminan llorando de espaldas.', s: 'Tiresias · Manto' },
+  { n: 'V', t: 'Barateros', p: 'Hervidos en brea; los Malebranche los ensartan con garfios.', s: 'Ciampolo', img: 'b5' },
+  { n: 'VI', t: 'Hipócritas', p: 'Capas de plomo doradas por fuera, aplastantes por dentro.', s: 'Caifás', img: 'b6' },
+  { n: 'VII', t: 'Ladrones', p: 'Mordidos por serpientes, arden en ceniza y se transforman en ellas.', s: 'Vanni Fucci', img: 'b7' },
+  { n: 'VIII', t: 'Malos consejeros', p: 'Cada alma, oculta dentro de una llama que habla.', s: 'Ulises y Diomedes', img: 'b8' },
+  { n: 'IX', t: 'Sembradores de discordia', p: 'Un demonio con espada los parte una y otra vez.', s: 'Bertran de Born', img: 'b9' },
+  { n: 'X', t: 'Falsarios', p: 'Plagados de lepra, sarna, fiebre e hidropesía, en la pestilencia.', s: 'Griffolino · Capocchio', img: 'b10' },
+];
+---
+<ol class="bolge">
+  {bolge.map((b) => (
+    <li class="bolgia reveal">
+      {b.img ? (
+        <Plate img={b.img} alt={`Bolgia ${b.n}: ${b.t}, grabado de Gustave Doré`} kb={false} anim={b.n === 'VIII' ? 'flicker' : 'breathe'} fx={b.n === 'VIII' ? ['fire'] : []} />
+      ) : (
+        <div class="plate"><div class="plate-frame"><div class="ornament" aria-hidden="true">{b.n}</div></div></div>
+      )}
+      <p class="n" style="margin-top:18px">Bolgia {b.n}</p>
+      <h3>{b.t}</h3>
+      <p>{b.p}</p>
+      <p class="who">{b.s}</p>
+    </li>
+  ))}
+</ol>
