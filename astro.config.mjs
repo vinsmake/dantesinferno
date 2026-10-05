@@ -1,3 +1,7 @@
 import { defineConfig } from 'astro/config';
 
-export default defineConfig({});
+// Published as a GitHub Pages project site: https://vinsmake.github.io/dantesinferno/
+export default defineConfig({
+  site: 'https://vinsmake.github.io',
+  base: '/dantesinferno',
+});

@@ -7,6 +7,7 @@ import Scene from '../components/dore/Scene.astro';
 import Notes from '../components/dore/Notes.astro';
 import Plate from '../components/dore/Plate.astro';
 import Bolge from '../components/dore/Bolge.astro';
+import { url } from '../lib/url';
 
 ---
 <DoreBase title="Inferno · Grabados de Gustave Doré" description="Un descenso por el Infierno de Dante a través de los grabados de Gustave Doré (1861).">
@@ -248,7 +249,7 @@ import Bolge from '../components/dore/Bolge.astro';
     <footer class="colophon">
         <p>Fin del <b>INFERNO</b> · El viaje continúa en el <i>Purgatorio</i></p>
         <a href="#selva" class="btn" data-top>↑ Volver a la selva oscura</a>
-        <a href="/color" class="btn">Versión ilustrada a color</a>
+        <a href={url('/color/')} class="btn">Versión ilustrada a color</a>
         <p class="credits">Grabados de Gustave Doré para la <i>Divina Commedia</i> (Hachette, 1861), dominio público, vía Wikimedia Commons. Versos de Dante Alighieri; traducciones libres.</p>
     </footer>
   </main>

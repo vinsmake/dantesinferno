@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 /**
  * A pinned, full-screen engraving explored by a scroll-driven camera.
  * Each step is a camera position (focal point x/y in 0..1 of the image,
@@ -38,7 +39,7 @@ const imgs = [...new Set(p.steps.map((s) => s.img))];
 >
   <div class="cam">
     {imgs.map((k, i) => (
-      <img class:list={['cam-layer', `fx-${p.anim ?? 'breathe'}`]} data-layer={k} src={`/dore/${k}.webp`} alt="" loading={i === 0 && p.id === 'selva' ? 'eager' : 'lazy'} decoding="async" style={i ? 'opacity:0' : ''} />
+      <img class:list={['cam-layer', `fx-${p.anim ?? 'breathe'}`]} data-layer={k} src={url(`/dore/${k}.webp`)} alt="" loading={i === 0 && p.id === 'selva' ? 'eager' : 'lazy'} decoding="async" style={i ? 'opacity:0' : ''} />
     ))}
     {(p.fx ?? []).map((f) => <div class={`fx fx-${f}`} aria-hidden="true" />)}
   </div>
